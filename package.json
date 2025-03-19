@@ -1,0 +1,17 @@
+{
+  "name": "vanilla-sonner",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "vite": "^6.2.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  }
+}

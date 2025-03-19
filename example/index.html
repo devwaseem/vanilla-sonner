@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vanilla Sonner Example</title>
+    <link href="/../src/style.css" rel="stylesheet" />
+    <link href="/example/style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="btn-group">
+      <button id="create-toast" onclick="makeToast('Top Left', 'top-left')">
+        top-left
+      </button>
+      <button id="create-toast" onclick="makeToast('Top Center', 'top-center')">
+        top-center
+      </button>
+      <button id="create-toast" onclick="makeToast('Top Right', 'top-right')">
+        top-right
+      </button>
+      <button
+        id="create-toast"
+        onclick="makeToast('Bottom Left', 'bottom-left')"
+      >
+        bottom-left
+      </button>
+
+      <button
+        id="create-toast"
+        onclick="makeToast('Bottom Center', 'bottom-center')"
+      >
+        bottom-center
+      </button>
+      <button
+        id="create-toast"
+        onclick="makeToast('Bottom Right', 'bottom-right')"
+      >
+        bottom-right
+      </button>
+    </div>
+    <ol id="sonner-toast-container" position="bottom-right" max-toasts="10"><ol/>
+    <script src="/../src/index.js" type="module"></script>
+    <script>
+      function makeToast(message, position) {
+        document
+          .getElementById("sonner-toast-container")
+          .setAttribute("position", position);
+        toast({ message });
+      }
+    </script>
+  </body>
+</html>
