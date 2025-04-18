@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 async function build() {
   // Bundle JS
   await esbuild.build({
-    entryPoints: ["src/index.js", "src/toaster.js", "src/toast.js"],
+    entryPoints: ["src/index.js"],
     entryNames: "[name]",
     bundle: true,
     format: "esm",
