@@ -7,8 +7,7 @@
     "main": "dist/index.js",
     "module": "dist/index.js",
     "exports": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.js"
+        ".": "./dist/index.js"
     },
     "scripts": {
         "build": "node build.js"
