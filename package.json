@@ -1,6 +1,6 @@
 {
     "name": "vanilla-sonner",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "exports": {
         "./toast": "./dist/toast.js",
         "./toaster": "./dist/toaster.js",
@@ -17,8 +17,7 @@
     "author": "",
     "license": "MIT",
     "description": "",
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
         "esbuild": "^0.25.2",
         "fs-extra": "^11.3.0",
