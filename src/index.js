@@ -8,8 +8,6 @@ function toast(options) {
   });
 }
 
-toast.hello = function () {
-  alert("hello");
-};
-
 window.toast = toast;
+
+export { Toaster, toaster, toast };

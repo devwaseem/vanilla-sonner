@@ -1,17 +1,27 @@
 {
-  "name": "vanilla-sonner",
-  "version": "0.0.1",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "MIT",
-  "description": "",
-  "dependencies": {
-    "vite": "^6.2.2"
-  },
-  "devDependencies": {
-    "prettier": "^3.5.3"
-  }
+    "name": "vanilla-sonner",
+    "version": "0.0.1",
+    "exports": {
+        "./toast": "./dist/toast.js",
+        "./toaster": "./dist/toaster.js",
+        "./index": "./dist/index.js"
+    },
+    "files": [
+        "dist"
+    ],
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "node build.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "MIT",
+    "description": "",
+    "dependencies": {
+    },
+    "devDependencies": {
+        "esbuild": "^0.25.2",
+        "fs-extra": "^11.3.0",
+        "prettier": "^3.5.3"
+    }
 }
