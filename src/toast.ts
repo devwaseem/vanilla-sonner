@@ -1,5 +1,24 @@
+import { ToastOptions } from './models';
+
 export default class Toast {
-  constructor(options) {
+  id: string;
+  message: string;
+  toast: HTMLElement;
+  xPosition: string;
+  yPosition: string;
+
+  timeStarted: number;
+  removalTimer: NodeJS.Timeout | null;
+  lastRemovalPaused: number;
+  duration: number;
+  remainingTimeToRemove: number;
+  height: number;
+  onRemove: ((id: string) => void) | null;
+
+  isFront: boolean;
+  index: number;
+
+  constructor(options: ToastOptions) {
     this.id = options.id;
     this.message = options.message;
 
@@ -8,10 +27,11 @@ export default class Toast {
     this.yPosition = options.yPosition || "bottom";
     this.#setup();
 
+    this.timeStarted = Date.now();
     this.removalTimer = null;
     this.lastRemovalPaused = Date.now();
     this.duration = options.duration || 5000;
-    this.remainingTimeToRemove = null;
+    this.remainingTimeToRemove = this.duration;
     this.height = 0;
     this.onRemove = null;
   }
@@ -33,60 +53,62 @@ export default class Toast {
 
     this.toast.dataset.sonnerToast = "";
     this.toast.dataset.theme = "light";
-    this.toast.dataset.mounted = false;
-    this.toast.dataset.visible = false;
+    this.toast.dataset.mounted = "false";
+    this.toast.dataset.removed = "false"
+    this.toast.dataset.expanded = "false"
     this.toast.dataset.xPosition = this.xPosition;
     this.toast.dataset.yPosition = this.yPosition;
-    this.setCollapsed();
   }
 
-  setFront(value) {
+  setFront(value: boolean) {
     this.isFront = value;
-    this.toast.dataset.front = value;
+    this.toast.dataset.front = value.toString();
   }
 
-  setXPosition(xPosition) {
+  setXPosition(xPosition: string) {
     this.xPosition = xPosition;
     this.toast.dataset.xPosition = xPosition;
   }
 
-  setYPosition(yPosition) {
+  setYPosition(yPosition: string) {
     this.yPosition = yPosition;
     this.toast.dataset.yPosition = yPosition;
   }
 
-  setIndex(index) {
+  setIndex(index: number) {
     this.index = index;
-    this.element.style.setProperty("--index", index);
+    this.element.style.setProperty("--index", String(index));
   }
 
   revive() {
-    this.toast.dataset.removed = false;
+    this.toast.dataset.removed = "false";
   }
 
   setLeaving() {
-    this.toast.dataset.removed = true;
+    this.toast.dataset.removed = "true";
   }
 
   setMounted() {
     setTimeout(() => {
-      this.toast.dataset.mounted = true;
-    }, 0);
+      this.toast.dataset.mounted = "true";
+    }, 10);
     this.#setupRemoval();
   }
 
-  setSpaceAbove(value) {
+  setSpaceAbove(value: number) {
     this.element.style.setProperty("--space-above", `${value}px`);
   }
 
-  setExpanded(spaceAbove) {
-    this.toast.dataset.expanded = true;
-    // this.pauseRemoval();
+  setExpanded() {
+    this.toast.dataset.expanded = "true";
+    this.pauseRemoval();
   }
 
   setCollapsed() {
-    this.toast.dataset.expanded = false;
-    // this.resumeRemoval();
+    this.toast.dataset.expanded = "false";
+    if (!this.removalTimer) {
+      this.resumeRemoval();
+    }
   }
 
   #setupRemoval() {
@@ -97,24 +119,19 @@ export default class Toast {
   }
 
   pauseRemoval() {
-    if (!this.removalTimer) {
-      return;
+    if (this.removalTimer) {
+      clearTimeout(this.removalTimer);
     }
-    clearTimeout(this.removalTimer);
     this.removalTimer = null;
-
-    this.lastRemovalPaused = Date.now();
-    this.remainingTimeToRemove = this.duration - elapsedTime;
-    console.log(this.remainingTimeToRemove);
+    this.remainingTimeToRemove = Math.max(0, this.remainingTimeToRemove - (Date.now() - this.timeStarted));
   }
 
   resumeRemoval() {
-    if (!this.remainingTimeToRemove) {
-      return;
-    }
     this.removalTimer = setTimeout(() => {
       this.remove();
-    }, this.remainingTimeToRemove);
+      this.removalTimer = null;
+    }, this.remainingTimeToRemove! + 1000);
+    this.timeStarted = Date.now();
   }
 
   remove() {

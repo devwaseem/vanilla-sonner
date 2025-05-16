@@ -1,4 +1,4 @@
-import { Toaster } from "./toaster.js";
+import { Toaster } from "./toaster";
 
 const toaster = new Toaster();
 

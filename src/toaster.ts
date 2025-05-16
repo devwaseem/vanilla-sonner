@@ -1,10 +1,21 @@
 import Toast from "./toast.js";
+import { ToastOptions } from './models';
+
 
 export class Toaster {
+
+  toasts: Toast[];
+  container: HTMLElement;
+  maxToasts: number;
+  expandedByDefault: boolean;
+
   constructor() {
     this.toasts = [];
-    this.container = document.getElementById("sonner-toast-container");
-
+    const _container = document.getElementById("sonner-toast-container");
+    if (!_container) {
+      throw new Error("No container found");
+    }
+    this.container = _container;
     this.maxToasts = parseInt(this.container.getAttribute("max-toasts") || "3");
 
     let expanded = this.container.getAttribute("expanded") || "false";
@@ -30,19 +41,17 @@ export class Toaster {
     };
   }
 
-  create(options) {
+  create(options: ToastOptions) {
     if (this.toasts.length >= this.maxToasts) {
       const oldToast = this.toasts.shift();
-      oldToast.setLeaving();
+      if (oldToast) {
+        oldToast.setLeaving();
+      }
     }
 
     const container = this.container;
     const { xPosition, yPosition } = this.positions;
-    const toast = new Toast({
-      message: options.message,
-      xPosition,
-      yPosition,
-    });
+    const toast = new Toast(options);
 
     container.appendChild(toast.element);
     toast.updateHeight();
@@ -71,13 +80,13 @@ export class Toaster {
     toast.setMounted();
   }
 
-  #onMouseEnter(event) {
+  #onMouseEnter(_event: MouseEvent) {
     for (const toast of this.toasts) {
       toast.setExpanded();
     }
   }
 
-  #onMouseLeave(event) {
+  #onMouseLeave(_event: MouseEvent) {
     for (const toast of this.toasts) {
       toast.setCollapsed();
     }
