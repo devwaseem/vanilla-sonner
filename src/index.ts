@@ -22,6 +22,37 @@ toast.message = function (title: string, description: string) {
   });
 };
 
+toast.info = function (message: string) {
+  toaster.create({
+    mode: "info",
+    message,
+  })
+}
+
+toast.success = function (message: string) {
+  toaster.create({
+    mode: "success",
+    message,
+  })
+}
+
+toast.warning = function (message: string) {
+  toaster.create({
+    mode: "warning",
+    message,
+  })
+}
+
+toast.error = function (message: string) {
+  toaster.create({
+    mode: "error",
+    message,
+  })
+}
+
+
+
+
 declare global {
   interface Window {
     toast: (message: string) => void;

@@ -1,5 +1,5 @@
 import { ToastOptions } from './models';
-import { descriptionTemplate, buildTemplate } from './templates';
+import { descriptionTemplate, successTemplate, buildTemplate, infoTemplate, warningTemplate, errorTemplate } from './templates';
 
 export default class Toast {
   id: string;
@@ -48,10 +48,34 @@ export default class Toast {
   #setup() {
 
     if (this.options.mode == "plain") {
-      this.#setupPlainToast();
+      this.toast.innerHTML = `
+        <li data-toast-plain>
+        ${this.options.message}
+        </li>
+    `
     } else if (this.options.mode == "description") {
-      this.#setupDescriptionToast();
+      this.toast.innerHTML = buildTemplate(descriptionTemplate, {
+        title: this.options.message,
+        description: this.options.description || "",
+      })
+    } else if (this.options.mode == "success") {
+      this.toast.innerHTML = buildTemplate(successTemplate, {
+        message: this.options.message,
+      })
+    } else if (this.options.mode == "info") {
+      this.toast.innerHTML = buildTemplate(infoTemplate, {
+        message: this.options.message,
+      })
+    } else if (this.options.mode == "warning") {
+      this.toast.innerHTML = buildTemplate(warningTemplate, {
+        message: this.options.message,
+      })
+    } else if (this.options.mode == "error") {
+      this.toast.innerHTML = buildTemplate(errorTemplate, {
+        message: this.options.message,
+      })
     }
+
 
     this.toast.dataset.sonnerToast = "";
     this.toast.dataset.theme = "light";
@@ -64,21 +88,6 @@ export default class Toast {
 
   setCollapsedHeight(height: number) {
     this.toast.style.setProperty("--collapsed-height", `${height}px`);
-  }
-
-  #setupPlainToast() {
-    this.toast.innerHTML = `
-      <li data-toast-plain>
-      ${this.options.message}
-      </li>
-    `
-  }
-
-  #setupDescriptionToast() {
-    this.toast.innerHTML = buildTemplate(descriptionTemplate, {
-      title: this.options.message,
-      description: this.options.description || "",
-    })
   }
 
   setFront(value: boolean) {

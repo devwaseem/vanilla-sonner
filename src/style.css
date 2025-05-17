@@ -145,12 +145,15 @@
   height: auto;
 }
 
+/*  Plain Template CSS */
+
 [data-toast-plain] {
   font-weight: 500;
   font-size: 0.9rem;
 }
 
-/*  Description Template CSS */
+/* Description Template CSS */
+
 [data-toast-description] {
   display: flex;
   flex-direction: column;
@@ -163,5 +166,20 @@
 }
 [data-toast-description] > [data-description] {
   font-weight: regular;
+  font-size: 0.9rem;
+}
+
+/* Level based CSS */
+
+[data-toast-level] {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+}
+
+[data-toast-level-message] {
+  font-weight: 500;
   font-size: 0.9rem;
 }
