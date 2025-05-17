@@ -24,8 +24,8 @@ export default class Toast {
     this.options = options;
 
     this.toast = document.createElement("div");
-    this.xPosition = options.xPosition || "right";
-    this.yPosition = options.yPosition || "bottom";
+    this.setXPosition(options.xPosition || "right");
+    this.setYPosition(options.yPosition || "bottom");
     this.#setup();
 
     this.timeStarted = Date.now();

@@ -51,7 +51,11 @@ export class Toaster {
 
     const container = this.container;
     const { xPosition, yPosition } = this.positions;
-    const toast = new Toast(options);
+    const toast = new Toast({
+      ...options,
+      xPosition,
+      yPosition,
+    });
 
     container.appendChild(toast.element);
 
@@ -61,8 +65,6 @@ export class Toaster {
     this.toasts.forEach((toast, index) => {
       toast.setFront(false);
       toast.setIndex(this.toasts.length - index);
-      toast.setXPosition(xPosition);
-      toast.setYPosition(yPosition);
     });
 
     toast.updateHeight();
