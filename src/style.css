@@ -65,7 +65,6 @@
   width: var(--width);
   position: fixed;
   border-radius: var(--border-radius);
-  padding: var(--padding);
   box-sizing: border-box;
   padding: var(--padding);
   margin: 0;
@@ -133,15 +132,36 @@
 [data-sonner-toast][data-expanded="false"][data-front="false"] {
   --scale: calc(1 - ((var(--index) - 1) * 0.05));
   --y: calc(var(--lift) * -1 * var(--gap) * var(--index));
+  height: var(--collapsed-height);
 }
 
 [data-sonner-toast][data-front="false"][data-expanded="false"] > * {
   opacity: 0;
-  transition: opacity 300ms;
+  transition: opacity 100ms;
 }
 
 [data-sonner-toast][data-front="false"][data-expanded="true"] {
-  --y: calc(
-    var(--lift) * -1 * (var(--gap) * var(--index) + var(--space-above))
-  );
+  --y: calc(var(--lift) * -1 * (var(--gap) + var(--space-above)));
+  height: auto;
+}
+
+[data-toast-plain] {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/*  Description Template CSS */
+[data-toast-description] {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+[data-toast-description] > [data-title] {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+[data-toast-description] > [data-description] {
+  font-weight: regular;
+  font-size: 0.9rem;
 }

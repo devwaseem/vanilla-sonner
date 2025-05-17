@@ -1,7 +1,8 @@
 export interface ToastOptions {
-    id: string;
+    mode: "plain" | "description" | "success" | "info" | "warning" | "error";
     message: string;
-    xPosition: string;
-    yPosition: string;
-    duration: number;
+    description?: string;
+    xPosition?: string;
+    yPosition?: string;
+    duration?: number;
 }

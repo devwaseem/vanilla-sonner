@@ -1,9 +1,10 @@
 import { ToastOptions } from './models';
+import { descriptionTemplate, buildTemplate } from './templates';
 
 export default class Toast {
   id: string;
-  message: string;
   toast: HTMLElement;
+  options: ToastOptions;
   xPosition: string;
   yPosition: string;
 
@@ -19,8 +20,8 @@ export default class Toast {
   index: number;
 
   constructor(options: ToastOptions) {
-    this.id = options.id;
-    this.message = options.message;
+    this.id = `toast-${Math.random().toString(26).substring(4)}-${Date.now()}`;
+    this.options = options;
 
     this.toast = document.createElement("div");
     this.xPosition = options.xPosition || "right";
@@ -45,11 +46,12 @@ export default class Toast {
   }
 
   #setup() {
-    this.toast.innerHTML = `
-      <li>
-      ${this.message}
-      </li>
-    `;
+
+    if (this.options.mode == "plain") {
+      this.#setupPlainToast();
+    } else if (this.options.mode == "description") {
+      this.#setupDescriptionToast();
+    }
 
     this.toast.dataset.sonnerToast = "";
     this.toast.dataset.theme = "light";
@@ -58,6 +60,25 @@ export default class Toast {
     this.toast.dataset.expanded = "false"
     this.toast.dataset.xPosition = this.xPosition;
     this.toast.dataset.yPosition = this.yPosition;
+  }
+
+  setCollapsedHeight(height: number) {
+    this.toast.style.setProperty("--collapsed-height", `${height}px`);
+  }
+
+  #setupPlainToast() {
+    this.toast.innerHTML = `
+      <li data-toast-plain>
+      ${this.options.message}
+      </li>
+    `
+  }
+
+  #setupDescriptionToast() {
+    this.toast.innerHTML = buildTemplate(descriptionTemplate, {
+      title: this.options.message,
+      description: this.options.description || "",
+    })
   }
 
   setFront(value: boolean) {

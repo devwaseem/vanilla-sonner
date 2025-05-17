@@ -54,7 +54,7 @@ export class Toaster {
     const toast = new Toast(options);
 
     container.appendChild(toast.element);
-    toast.updateHeight();
+
 
     this.toasts.push(toast);
 
@@ -65,11 +65,15 @@ export class Toaster {
       toast.setYPosition(yPosition);
     });
 
+    toast.updateHeight();
     let height = 0;
+    let lastElementHeight = 0;
     for (let i = this.toasts.length - 1; i >= 0; i--) {
+      height += lastElementHeight;
       const existingToast = this.toasts[i];
+      existingToast.setCollapsedHeight(toast.height);
       existingToast.setSpaceAbove(height);
-      height += toast.height;
+      lastElementHeight = existingToast.height + 10;
     }
 
     if (this.expandedByDefault) {
@@ -78,6 +82,9 @@ export class Toaster {
 
     toast.setFront(true);
     toast.setMounted();
+    toast.onRemove = (id) => {
+      this.toasts = this.toasts.filter((toast) => toast.id != id);
+    }
   }
 
   #onMouseEnter(_event: MouseEvent) {

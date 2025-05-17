@@ -40,13 +40,13 @@
       </button>
     </div>
     <ol id="sonner-toast-container" position="bottom-right" max-toasts="3"><ol/>
-    <script src="/src/index.js" type="module"></script>
+    <script src="/src/index.ts" type="module"></script>
     <script>
       function makeToast(message, position) {
         document
           .getElementById("sonner-toast-container")
           .setAttribute("position", position);
-        toast({ message });
+        toast(message);
       }
     </script>
   </body>

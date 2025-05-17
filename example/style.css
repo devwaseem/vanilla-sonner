@@ -4,6 +4,10 @@
   padding: 0;
 }
 
+body {
+  background-color: beige;
+}
+
 .btn-group {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
