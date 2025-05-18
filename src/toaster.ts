@@ -32,8 +32,9 @@ export class Toaster {
     }
 
     let enableCloseButton =
-      this.container.getAttribute("closeButton") || "false";
+      this.container.getAttribute("close-button") || "false";
     this.enableCloseButton = enableCloseButton == "true";
+
   }
 
   get positions() {
@@ -61,6 +62,13 @@ export class Toaster {
       let containerTheme = this.container.getAttribute("theme");
       if (containerTheme == "light" || containerTheme == "dark") {
         options.theme = containerTheme
+      }
+    }
+
+    if (options.useRichColors == undefined || options.useRichColors == null) {
+      let containerRichColors = this.container.getAttribute("rich-colors");
+      if (containerRichColors == "true") {
+        options.useRichColors = true
       }
     }
 

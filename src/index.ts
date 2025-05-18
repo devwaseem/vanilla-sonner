@@ -6,7 +6,7 @@ const toaster = new Toaster();
 function toast(message: string) {
   toaster.create({
     message: message,
-    mode: "plain",
+    type: "plain",
   });
 }
 
@@ -16,7 +16,7 @@ toast.custom = function (options: ToastOptions) {
 
 toast.message = function (title: string, description: string) {
   toaster.create({
-    mode: "description",
+    type: "description",
     message: title,
     description,
   });
@@ -24,28 +24,28 @@ toast.message = function (title: string, description: string) {
 
 toast.info = function (message: string) {
   toaster.create({
-    mode: "info",
+    type: "info",
     message,
   });
 };
 
 toast.success = function (message: string) {
   toaster.create({
-    mode: "success",
+    type: "success",
     message,
   });
 };
 
 toast.warning = function (message: string) {
   toaster.create({
-    mode: "warning",
+    type: "warning",
     message,
   });
 };
 
 toast.error = function (message: string) {
   toaster.create({
-    mode: "error",
+    type: "error",
     message,
   });
 };

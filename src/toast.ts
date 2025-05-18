@@ -51,7 +51,7 @@ export default class Toast {
   }
 
   #setup() {
-    switch (this.options.mode) {
+    switch (this.options.type) {
       case "plain":
         this.toast.innerHTML = buildTemplate(plainTemplate, {
           id: this.id,
@@ -104,6 +104,8 @@ export default class Toast {
     this.toast.dataset.expanded = "false"
     this.toast.dataset.xPosition = this.xPosition;
     this.toast.dataset.yPosition = this.yPosition;
+    this.toast.dataset.type = this.options.type;
+    this.toast.dataset.richColors = this.options.useRichColors ? "true" : "false";
 
     if (this.options.closeButton) {
       this.toast.style.setProperty("--close-button-display", "var(--close-button-visible-display)");

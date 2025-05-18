@@ -261,3 +261,27 @@
   align-items: center;
   justify-content: center;
 }
+
+[data-sonner-toast][data-rich-colors="true"][data-type="success"] {
+  background-color: var(--success-bg);
+  border-color: var(--success-border);
+  color: var(--success-text);
+}
+
+[data-sonner-toast][data-rich-colors="true"][data-type="info"] {
+  background-color: var(--info-bg);
+  border-color: var(--info-border);
+  color: var(--info-text);
+}
+
+[data-sonner-toast][data-rich-colors="true"][data-type="warning"] {
+  background-color: var(--warning-bg);
+  border-color: var(--warning-border);
+  color: var(--warning-text);
+}
+
+[data-sonner-toast][data-rich-colors="true"][data-type="error"] {
+  background-color: var(--error-bg);
+  border-color: var(--error-border);
+  color: var(--error-text);
+}

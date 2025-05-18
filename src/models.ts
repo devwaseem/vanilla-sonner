@@ -1,11 +1,12 @@
 export interface ToastOptions {
-    mode: "plain" | "description" | "success" | "info" | "warning" | "error" | "action";
+    type: "plain" | "description" | "success" | "info" | "warning" | "error" | "action";
     message: string;
     theme?: "light" | "dark";
     description?: string;
-    xPosition?: string;
-    yPosition?: string;
+    xPosition?: "left" | "right" | "center";
+    yPosition?: "top" | "bottom";
     duration?: number;
+    useRichColors?: boolean;
     action?: {
         label: string;
         onClick: () => void;
