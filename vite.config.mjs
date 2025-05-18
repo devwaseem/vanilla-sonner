@@ -1,24 +1,28 @@
 import { defineConfig } from "vite";
-import vitePluginString from "vite-plugin-string";
 
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/index.js",
+      entry: "src/index.ts",
       name: "Sonner",
       fileName: (format) => `sonner.${format}.min.js`,
       formats: ["es", "umd"],
     },
     minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+      },
+      mangle: true,
+      format: {
+        comments: false,
+      },
+    },
     rollupOptions: {
       output: {
         exports: "named",
       },
     },
   },
-  plugins: [
-    vitePluginString({
-      include: ["src/templates/**/*.html"],
-    }),
-  ],
+  plugins: [],
 });
