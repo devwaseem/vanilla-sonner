@@ -15,6 +15,7 @@ export class Toaster {
       throw new Error("No container found");
     }
     this.container = _container;
+
     this.maxToasts = parseInt(this.container.getAttribute("max-toasts") || "3");
 
     let expanded = this.container.getAttribute("expanded") || "false";
@@ -54,6 +55,13 @@ export class Toaster {
 
     if (options.closeButton == undefined || options.closeButton == null) {
       options.closeButton = this.enableCloseButton;
+    }
+
+    if (options.theme == undefined || options.theme == null) {
+      let containerTheme = this.container.getAttribute("theme");
+      if (containerTheme == "light" || containerTheme == "dark") {
+        options.theme = containerTheme
+      }
     }
 
     const toast = new Toast({

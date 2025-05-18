@@ -98,7 +98,7 @@ export default class Toast {
     }
 
     this.toast.dataset.sonnerToast = "";
-    this.toast.dataset.theme = "light";
+    this.toast.dataset.theme = this.options.theme || "light";
     this.toast.dataset.mounted = "false";
     this.toast.dataset.hidden = "false"
     this.toast.dataset.expanded = "false"

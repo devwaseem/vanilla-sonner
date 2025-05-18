@@ -1,6 +1,7 @@
 export interface ToastOptions {
     mode: "plain" | "description" | "success" | "info" | "warning" | "error" | "action";
     message: string;
+    theme?: "light" | "dark";
     description?: string;
     xPosition?: string;
     yPosition?: string;

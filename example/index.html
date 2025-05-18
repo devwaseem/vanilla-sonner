@@ -59,8 +59,13 @@
       >
         Error
       </button>
+      <button
+        onclick="toggleTheme()"
+      >
+        Toggle Theme
+      </button>
     </div>
-    <ol id="sonner-toast-container" position="bottom-right" max-toasts="3" closeButton="true"><ol/>
+    <ol id="sonner-toast-container" position="bottom-right" max-toasts="3" expanded="true" closeButton="true" richColors="true"><ol/>
     <script src="/src/index.ts" type="module"></script>
     <script>
       function makeToast(message, position) {
@@ -68,6 +73,19 @@
           .getElementById("sonner-toast-container")
           .setAttribute("position", position);
         toast(message);
+      }
+      let theme = "light";
+      function toggleTheme() {
+        let container = document
+          .getElementById("sonner-toast-container")
+        if (theme == "light") {
+          container.setAttribute("theme", "dark");
+          theme = "dark";
+        } else {
+          container.setAttribute("theme", "light");
+          theme = "light";
+        }
+        toast.success("Theme changed to " + theme)
       }
     </script>
   </body>
