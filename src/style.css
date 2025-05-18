@@ -37,6 +37,9 @@
   --scale: 1;
   --gap: 10px;
   --lift: 1;
+  --close-button-hidden-display: none;
+  --close-button-visible-display: flex;
+  --close-button-display: var(--close-button-hidden-display);
 }
 
 [data-sonner-toast][data-theme="light"] {
@@ -66,7 +69,6 @@
   position: fixed;
   border-radius: var(--border-radius);
   box-sizing: border-box;
-  padding: var(--padding);
   margin: 0;
   list-style: none;
   outline: none;
@@ -77,6 +79,30 @@
   transform: translateX(var(--x)) translateY(var(--y)) scale(var(--scale));
   transition: transform, opacity;
   transition-duration: 0ms;
+}
+
+[data-sonner-toast] > li {
+  position: relative;
+  padding: var(--padding);
+}
+
+[data-toast-close] {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border: 1px solid var(--normal-border);
+  border-color: var(--normal-border);
+  border-radius: 50%;
+  display: var(--close-button-display);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  transition: background-color 100ms;
+  z-index: calc(9999999999 - var(--index));
+  color: var(--gray11);
 }
 
 [data-sonner-toast][data-x-position="left"] {
@@ -115,18 +141,21 @@
   transition-duration: 400ms;
 }
 
-[data-sonner-toast][data-removed="true"][data-front="true"] {
+[data-sonner-toast][data-hidden="true"][data-front="true"] {
   --y: 0;
   opacity: 0;
 }
 
-[data-sonner-toast][data-expanded="false"][data-removed="true"][data-front="false"] {
+[data-sonner-toast][data-expanded="false"][data-hidden="true"][data-front="false"] {
   opacity: 0;
 }
 
-[data-sonner-toast][data-expanded="true"][data-removed="true"][data-front="false"] {
+[data-sonner-toast][data-hidden="true"][data-expanded="true"],
+[data-sonner-toast][data-hidden="true"][data-expanded="false"][data-front="true"] {
+  transform: translateX(var(--x)) translateY(calc(var(--lift) * 100%));
   opacity: 0;
-  transition-duration: 200ms;
+  transition-property: transform, opacity;
+  transition-duration: 400ms;
 }
 
 [data-sonner-toast][data-expanded="false"][data-front="false"] {
@@ -137,7 +166,7 @@
 
 [data-sonner-toast][data-front="false"][data-expanded="false"] > * {
   opacity: 0;
-  transition: opacity 100ms;
+  transition: opacity 400ms;
 }
 
 [data-sonner-toast][data-front="false"][data-expanded="true"] {
@@ -182,4 +211,8 @@
 [data-toast-level-message] {
   font-weight: 500;
   font-size: 0.9rem;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,5 +1,5 @@
 import { ToastOptions } from './models';
-import { descriptionTemplate, successTemplate, buildTemplate, infoTemplate, warningTemplate, errorTemplate } from './templates';
+import { plainTemplate, descriptionTemplate, successTemplate, buildTemplate, infoTemplate, warningTemplate, errorTemplate } from './templates';
 
 export default class Toast {
   id: string;
@@ -15,6 +15,8 @@ export default class Toast {
   remainingTimeToRemove: number;
   height: number;
   onRemove: ((id: string) => void) | null;
+  onClose: ((id: string) => void) | null;
+  hidden: boolean;
 
   isFront: boolean;
   index: number;
@@ -22,18 +24,21 @@ export default class Toast {
   constructor(options: ToastOptions) {
     this.id = `toast-${Math.random().toString(26).substring(4)}-${Date.now()}`;
     this.options = options;
-
     this.toast = document.createElement("div");
+    this.toast.setAttribute("id", this.id);
     this.setXPosition(options.xPosition || "right");
     this.setYPosition(options.yPosition || "bottom");
     this.#setup();
 
+    this.hidden = false;
+
     this.timeStarted = Date.now();
     this.removalTimer = null;
     this.lastRemovalPaused = Date.now();
-    this.duration = options.duration || 5000;
+    this.duration = options.duration || 0;
     this.remainingTimeToRemove = this.duration;
     this.height = 0;
+    this.onClose = null;
     this.onRemove = null;
   }
 
@@ -46,44 +51,70 @@ export default class Toast {
   }
 
   #setup() {
-
-    if (this.options.mode == "plain") {
-      this.toast.innerHTML = `
-        <li data-toast-plain>
-        ${this.options.message}
-        </li>
-    `
-    } else if (this.options.mode == "description") {
-      this.toast.innerHTML = buildTemplate(descriptionTemplate, {
-        title: this.options.message,
-        description: this.options.description || "",
-      })
-    } else if (this.options.mode == "success") {
-      this.toast.innerHTML = buildTemplate(successTemplate, {
-        message: this.options.message,
-      })
-    } else if (this.options.mode == "info") {
-      this.toast.innerHTML = buildTemplate(infoTemplate, {
-        message: this.options.message,
-      })
-    } else if (this.options.mode == "warning") {
-      this.toast.innerHTML = buildTemplate(warningTemplate, {
-        message: this.options.message,
-      })
-    } else if (this.options.mode == "error") {
-      this.toast.innerHTML = buildTemplate(errorTemplate, {
-        message: this.options.message,
-      })
+    switch (this.options.mode) {
+      case "plain":
+        this.toast.innerHTML = buildTemplate(plainTemplate, {
+          id: this.id,
+          message: this.options.message,
+        });
+        break;
+      case "description":
+        this.toast.innerHTML = buildTemplate(descriptionTemplate, {
+          id: this.id,
+          title: this.options.message,
+          description: this.options.description || "",
+        });
+        break;
+      case "success":
+        this.toast.innerHTML = buildTemplate(successTemplate, {
+          id: this.id,
+          message: this.options.message,
+        });
+        break;
+      case "info":
+        this.toast.innerHTML = buildTemplate(infoTemplate, {
+          id: this.id,
+          message: this.options.message,
+        });
+        break;
+      case "warning":
+        this.toast.innerHTML = buildTemplate(warningTemplate, {
+          id: this.id,
+          message: this.options.message,
+        });
+        break;
+      case "error":
+        this.toast.innerHTML = buildTemplate(errorTemplate, {
+          id: this.id,
+          message: this.options.message,
+        });
+        break;
+      case "action":
+        this.toast.innerHTML = buildTemplate(errorTemplate, {
+          id: this.id,
+          message: this.options.message,
+        });
+        break;
     }
-
 
     this.toast.dataset.sonnerToast = "";
     this.toast.dataset.theme = "light";
     this.toast.dataset.mounted = "false";
-    this.toast.dataset.removed = "false"
+    this.toast.dataset.hidden = "false"
     this.toast.dataset.expanded = "false"
     this.toast.dataset.xPosition = this.xPosition;
     this.toast.dataset.yPosition = this.yPosition;
+
+    if (this.options.closeButton) {
+      this.toast.style.setProperty("--close-button-display", "var(--close-button-visible-display)");
+    }
+
+    this.toast.querySelector("[data-toast-close]")?.addEventListener("click", () => {
+      this.remove();
+      if (this.removalTimer) {
+        clearTimeout(this.removalTimer);
+      }
+    });
   }
 
   setCollapsedHeight(height: number) {
@@ -110,19 +141,23 @@ export default class Toast {
     this.element.style.setProperty("--index", String(index));
   }
 
-  revive() {
-    this.toast.dataset.removed = "false";
+  show() {
+    this.toast.dataset.hidden = "false";
+    this.hidden = false;
   }
 
-  setLeaving() {
-    this.toast.dataset.removed = "true";
+  hide() {
+    this.toast.dataset.hidden = "true";
+    this.hidden = true;
   }
 
   setMounted() {
     setTimeout(() => {
       this.toast.dataset.mounted = "true";
     }, 10);
-    this.#setupRemoval();
+    if (this.duration > 0) {
+      this.#setupRemoval();
+    }
   }
 
   setSpaceAbove(value: number) {
@@ -131,12 +166,14 @@ export default class Toast {
 
   setExpanded() {
     this.toast.dataset.expanded = "true";
-    this.pauseRemoval();
+    if (this.duration > 0) {
+      this.pauseRemoval();
+    }
   }
 
   setCollapsed() {
     this.toast.dataset.expanded = "false";
-    if (!this.removalTimer) {
+    if (this.duration > 0 && !this.removalTimer) {
       this.resumeRemoval();
     }
   }
@@ -165,12 +202,13 @@ export default class Toast {
   }
 
   remove() {
-    this.setLeaving();
+    this.hide();
+    this.onClose?.(this.toast.id);
     setTimeout(() => {
       this.element.remove();
       if (this.onRemove) {
         this.onRemove(this.toast.id);
       }
-    }, 3000);
+    }, 500);
   }
 }

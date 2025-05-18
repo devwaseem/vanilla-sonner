@@ -1,13 +1,12 @@
 import Toast from "./toast.js";
-import { ToastOptions } from './models';
-
+import { ToastOptions } from "./models";
 
 export class Toaster {
-
   toasts: Toast[];
   container: HTMLElement;
   maxToasts: number;
   expandedByDefault: boolean;
+  enableCloseButton: boolean;
 
   constructor() {
     this.toasts = [];
@@ -30,6 +29,10 @@ export class Toaster {
         this.#onMouseLeave.bind(this)
       );
     }
+
+    let enableCloseButton =
+      this.container.getAttribute("closeButton") || "false";
+    this.enableCloseButton = enableCloseButton == "true";
   }
 
   get positions() {
@@ -42,51 +45,77 @@ export class Toaster {
   }
 
   create(options: ToastOptions) {
-    if (this.toasts.length >= this.maxToasts) {
-      const oldToast = this.toasts.shift();
-      if (oldToast) {
-        oldToast.setLeaving();
-      }
+    const container = this.container;
+
+    const containerDuration = container.getAttribute("duration");
+    if (!options.duration && containerDuration) {
+      options.duration = parseInt(containerDuration);
     }
 
-    const container = this.container;
-    const { xPosition, yPosition } = this.positions;
+    if (options.closeButton == undefined || options.closeButton == null) {
+      options.closeButton = this.enableCloseButton;
+    }
+
     const toast = new Toast({
       ...options,
-      xPosition,
-      yPosition,
     });
 
     container.appendChild(toast.element);
 
-
+    toast.updateHeight();
     this.toasts.push(toast);
 
-    this.toasts.forEach((toast, index) => {
-      toast.setFront(false);
-      toast.setIndex(this.toasts.length - index);
-    });
+    this.refresh();
+    toast.setMounted();
 
-    toast.updateHeight();
-    let height = 0;
-    let lastElementHeight = 0;
-    for (let i = this.toasts.length - 1; i >= 0; i--) {
-      height += lastElementHeight;
-      const existingToast = this.toasts[i];
-      existingToast.setCollapsedHeight(toast.height);
-      existingToast.setSpaceAbove(height);
-      lastElementHeight = existingToast.height + 10;
-    }
+    toast.onClose = (id) => {
+      this.toasts = this.toasts.filter((toast) => toast.id != id);
+      this.refresh();
+    };
+
+    toast.onRemove = (id) => { };
 
     if (this.expandedByDefault) {
       toast.setExpanded();
     }
+  }
 
-    toast.setFront(true);
-    toast.setMounted();
-    toast.onRemove = (id) => {
-      this.toasts = this.toasts.filter((toast) => toast.id != id);
+  refresh() {
+    if (this.toasts.length === 0) {
+      return;
     }
+
+    const { xPosition, yPosition } = this.positions;
+    this.toasts.forEach((toast, index) => {
+      let reverseIndex = this.toasts.length - index
+      toast.setFront(false);
+      toast.setIndex(reverseIndex);
+      toast.setXPosition(xPosition);
+      toast.setYPosition(yPosition);
+      if (reverseIndex > this.maxToasts) {
+        toast.hide()
+      } else {
+        toast.show()
+      }
+    });
+
+    let frontToast = this.toasts[this.toasts.length - 1];
+
+    let height = 0;
+    let lastElementHeight = 0;
+    for (let i = this.toasts.length - 1; i >= 0; i--) {
+      const existingToast = this.toasts[i];
+      if (existingToast.hidden) {
+        continue;
+      }
+      height += lastElementHeight;
+      existingToast.setCollapsedHeight(frontToast.height);
+      existingToast.setSpaceAbove(height);
+      lastElementHeight = existingToast.height + 10;
+    }
+
+    frontToast.setFront(true);
+    console.log("refresh complete");
   }
 
   #onMouseEnter(_event: MouseEvent) {
