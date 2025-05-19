@@ -1,0 +1,292 @@
+[data-sonner-toast] {
+  --gray1: hsl(0, 0%, 99%);
+  --gray2: hsl(0, 0%, 97.3%);
+  --gray3: hsl(0, 0%, 95.1%);
+  --gray4: hsl(0, 0%, 93%);
+  --gray5: hsl(0, 0%, 90.9%);
+  --gray6: hsl(0, 0%, 88.7%);
+  --gray7: hsl(0, 0%, 85.8%);
+  --gray8: hsl(0, 0%, 78%);
+  --gray9: hsl(0, 0%, 56.1%);
+  --gray10: hsl(0, 0%, 52.3%);
+  --gray11: hsl(0, 0%, 43.5%);
+  --gray12: hsl(0, 0%, 9%);
+  --border-radius: 12px;
+  --padding: 16px;
+  --width: 300px;
+  --x-offset: 12px;
+  --y-offset: 12px;
+  --opacity: 1;
+  --y: 0%;
+  --x: 0%;
+  --scale: 1;
+  --gap: 10px;
+  --lift: 1;
+  --close-button-hidden-display: none;
+  --close-button-visible-display: flex;
+  --close-button-display: var(--close-button-hidden-display);
+
+  width: var(--width);
+  position: fixed;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+  margin: 0;
+  list-style: none;
+  outline: none;
+  z-index: calc(999999999 - var(--index));
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: var(--normal-bg);
+  color: var(--normal-text);
+  border: 1px solid var(--normal-border);
+  transform: translateX(var(--x)) translateY(var(--y)) scale(var(--scale));
+  transition: transform, opacity;
+  transition-duration: 0ms;
+
+  & > li {
+    position: relative;
+    padding: var(--padding);
+  }
+
+  // Themes
+
+  &[data-theme="light"] {
+    --normal-bg: #fff;
+    --normal-border: var(--gray4);
+    --normal-text: var(--gray12);
+
+    --success-bg: hsl(143, 85%, 96%);
+    --success-border: hsl(145, 92%, 91%);
+    --success-text: hsl(140, 100%, 27%);
+
+    --info-bg: hsl(208, 100%, 97%);
+    --info-border: hsl(221, 91%, 91%);
+    --info-text: hsl(210, 92%, 45%);
+
+    --warning-bg: hsl(49, 100%, 97%);
+    --warning-border: hsl(49, 91%, 91%);
+    --warning-text: hsl(31, 92%, 45%);
+
+    --error-bg: hsl(359, 100%, 97%);
+    --error-border: hsl(359, 100%, 94%);
+    --error-text: hsl(360, 100%, 45%);
+  }
+
+  &[data-theme="dark"] {
+    --normal-bg: #000;
+    --normal-border: hsl(0, 0%, 20%);
+    --normal-text: var(--gray1);
+
+    --success-bg: hsl(150, 100%, 6%);
+    --success-border: hsl(147, 100%, 12%);
+    --success-text: hsl(150, 86%, 65%);
+
+    --info-bg: hsl(215, 100%, 6%);
+    --info-border: hsl(223, 100%, 12%);
+    --info-text: hsl(216, 87%, 65%);
+
+    --warning-bg: hsl(64, 100%, 6%);
+    --warning-border: hsl(60, 100%, 12%);
+    --warning-text: hsl(46, 87%, 65%);
+
+    --error-bg: hsl(358, 76%, 10%);
+    --error-border: hsl(357, 89%, 16%);
+    --error-text: hsl(358, 100%, 81%);
+  }
+
+  &[data-rich-colors="true"] {
+    &[data-type="success"] {
+      background-color: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+
+      & > li > [data-toast-close] {
+        background-color: var(--success-bg);
+        border-color: var(--success-border);
+        color: var(--success-text);
+      }
+    }
+
+    &[data-type="info"] {
+      background-color: var(--info-bg);
+      border-color: var(--info-border);
+      color: var(--info-text);
+
+      & > li > [data-toast-close] {
+        background-color: var(--info-bg);
+        border-color: var(--info-border);
+        color: var(--info-text);
+      }
+    }
+
+    &[data-type="warning"] {
+      background-color: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+
+      & > li > [data-toast-close] {
+        background-color: var(--warning-bg);
+        border-color: var(--warning-border);
+        color: var(--warning-text);
+      }
+    }
+
+    &[data-type="error"] {
+      background-color: var(--error-bg);
+      border-color: var(--error-border);
+      color: var(--error-text);
+
+      & > li > [data-toast-close] {
+        background-color: var(--error-bg);
+        border-color: var(--error-border);
+        color: var(--error-text);
+      }
+    }
+  }
+
+  // Positions
+
+  &[data-x-position="left"] {
+    left: max(var(--x-offset), env(safe-area-inset-left));
+  }
+
+  &[data-x-position="right"] {
+    right: max(var(--x-offset), env(safe-area-inset-right));
+  }
+
+  &[data-x-position="center"] {
+    --x: -50%;
+    left: 50%;
+  }
+
+  &[data-y-position="top"] {
+    top: max(var(--y-offset), env(safe-area-inset-top));
+    --lift: -1;
+  }
+
+  &[data-y-position="bottom"] {
+    bottom: max(var(--y-offset), env(safe-area-inset-bottom));
+    --lift: 1;
+  }
+
+  // Mounted
+
+  &[data-mounted="false"] {
+    opacity: 0;
+    --y: calc(var(--lift) * 100%);
+    transition: none;
+    transition-duration: 0ms;
+  }
+
+  &[data-mounted="true"] {
+    --y: calc(var(--lift) * -1 * var(--gap));
+    opacity: 1;
+    transition-duration: 400ms;
+  }
+
+  &[data-hidden="true"][data-expanded="true"],
+  &[data-hidden="true"][data-expanded="false"][data-front="true"] {
+    transform: translateX(var(--x)) translateY(calc(var(--lift) * 100%));
+    opacity: 0;
+    transition-property: transform, opacity;
+    transition-duration: 400ms;
+  }
+
+  // Front toast props
+  &[data-front="true"] {
+    &[data-hidden="true"] {
+      --y: 0;
+      opacity: 0;
+    }
+  }
+
+  // Non-front properties
+  &[data-front="false"] {
+    &[data-expanded="false"] {
+      --scale: calc(1 - ((var(--index) - 1) * 0.05));
+      --y: calc(var(--lift) * -1 * var(--gap) * var(--index));
+      height: var(--collapsed-height);
+
+      & > * {
+        opacity: 0;
+        transition: opacity 400ms;
+      }
+
+      &[data-hidden="true"] {
+        opacity: 0;
+      }
+    }
+
+    &[data-expanded="true"] {
+      --y: calc(var(--lift) * -1 * (var(--gap) + var(--space-above)));
+      height: auto;
+    }
+  }
+}
+
+[data-toast-close] {
+  width: 20px;
+  height: 20px;
+  color: var(--normal-text);
+  background-color: var(--normal-bg);
+  border: 1px solid var(--normal-border);
+  border-color: var(--normal-border);
+  border-radius: 50%;
+  display: var(--close-button-display);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  transition: background-color 100ms;
+  z-index: calc(9999999999 - var(--index));
+
+  &:hover {
+    background-color: var(--normal-border);
+  }
+}
+
+/*  Plain Template CSS */
+
+[data-toast-plain] {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Description Template CSS */
+
+[data-toast-description] {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  & > [data-title] {
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  & > [data-description] {
+    font-weight: regular;
+    font-size: 0.9rem;
+  }
+
+}
+
+/* Level based CSS */
+
+[data-toast-level] {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+}
+
+[data-toast-level-message] {
+  font-weight: 500;
+  font-size: 0.9rem;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

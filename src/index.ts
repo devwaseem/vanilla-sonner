@@ -1,4 +1,4 @@
-import "./style.css"
+import "./style.scss"
 import { ToastOptions } from "./models";
 import { Toaster } from "./toaster";
 
