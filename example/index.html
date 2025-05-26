@@ -1,72 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Vanilla Sonner Example</title>
-    <link href="/example/style.css" rel="stylesheet" />
-  </head>
-
-  <body>
-    <div class="btn-group">
-      <button  onclick="makeToast('Top Left', 'top-left')">
-        top-left
-      </button>
-      <button  onclick="makeToast('Top Center', 'top-center')">
-        top-center
-      </button>
-      <button  onclick="makeToast('Top Right', 'top-right')">
-        top-right
-      </button>
-      <button
-        onclick="makeToast('Bottom Left', 'bottom-left')"
-      >
-        bottom-left
-      </button>
-      <button
-        onclick="makeToast('Bottom Center', 'bottom-center')"
-      >
-        bottom-center
-      </button>
-      <button
-        onclick="makeToast('Bottom Right', 'bottom-right')"
-      >
-        bottom-right
-      </button>
-      <button
-        onclick="toast.message('Update available', 'New version available for download')"
-      >
-        Description
-      </button>
-      <button
-        onclick="toast.success('Event created successfully!')"
-      >
-        Success
-      </button>
-      <button
-        onclick="toast.info('5 Tasks completed!')" 
-      >
-        Info
-      </button>
-      <button
-        onclick="toast.warning('Please save your changes before closing!')"
-      >
-        Warning
-      </button>
-      <button
-        onclick="toast.error('Something went wrong')"
-      >
-        Error
-      </button>
-      <button
-        onclick="toggleTheme()"
-      >
-        Toggle Theme
-      </button>
-    </div>
-    <ol id="sonner-toast-container" position="bottom-right" max-toasts="3" duration="5000" close-button="true" rich-colors="true"><ol/>
-    <script src="/src/index.ts" type="module"></script>
-    <script>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Vanilla Sonner Example</title>
+        <link href="/example/style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="btn-group">
+            <button onclick="makeToast('Top Left', 'top-left')">top-left</button>
+            <button onclick="makeToast('Top Center', 'top-center')">top-center</button>
+            <button onclick="makeToast('Top Right', 'top-right')">top-right</button>
+            <button onclick="makeToast('Bottom Left', 'bottom-left')">bottom-left</button>
+            <button onclick="makeToast('Bottom Center', 'bottom-center')">bottom-center</button>
+            <button onclick="makeToast('Bottom Right', 'bottom-right')">bottom-right</button>
+            <button onclick="toast.message('Update available', 'New version available for download')">Description</button>
+            <button onclick="toast.success('Event created successfully!')">Success</button>
+            <button onclick="toast.info('5 Tasks completed!')">Info</button>
+            <button onclick="toast.warning('Please save your changes before closing!')">Warning</button>
+            <button onclick="toast.error('Something went wrong')">Error</button>
+            <button onclick="toggleTheme()">Toggle Theme</button>
+        </div>
+        <ol id="sonner-toast-container"
+            position="bottom-right"
+            max-toasts="3"
+            duration="5000"
+            close-button="true"
+            rich-colors="true">
+        </ol>
+        <script src="/src/sonner.ts" type="module"></script>
+        <script>
       function makeToast(message, position) {
         document
           .getElementById("sonner-toast-container")
@@ -86,6 +49,6 @@
         }
         toast.success("Theme changed to " + theme)
       }
-    </script>
-  </body>
+        </script>
+    </body>
 </html>
