@@ -1,4 +1,4 @@
-import "./style.scss"
+import "./style.scss";
 import { ToastOptions } from "./models";
 import { Toaster } from "./toaster";
 
@@ -58,9 +58,5 @@ declare global {
 }
 
 window.toast = toast;
-
-// toast("Hello World");
-// toast("Hello World Again!");
-// toast.message("Hello World", "This is a description");
 
 export { Toaster, toaster, toast };
