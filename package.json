@@ -1,18 +1,34 @@
 {
   "name": "vanilla-sonner",
-  "version": "0.0.6",
+  "version": "0.1.0",
+  "main": "dist/sonner.umd.min.js",
+  "module": "dist/sonner.es.min.js",
+  "types": "dist/index.d.ts",
+  "style": "dist/sonner.min.css",
+  "exports": {
+    ".": {
+      "import": "./dist/sonner.es.min.js",
+      "require": "./dist/sonner.umd.min.js",
+      "default": "./dist/sonner.es.min.js"
+    },
+    "./style.css": "./dist/sonner.min.css"
+  },
   "files": [
     "dist"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "exports": {
-    ".": "./dist/index.js",
-    "./dist/style.css": "./dist/style.css"
-  },
   "scripts": {
-    "build": "node build.js"
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
   },
+  "keywords": [
+    "sonner-toast",
+    "toast",
+    "notification",
+    "vanilla-js",
+    "javascript",
+    "ui",
+    "frontend"
+  ],
   "author": "Waseem Akram <waseem07799@gmail.com>",
   "license": "MIT",
   "description": "Vanilla port of Sonner Toasts",
@@ -21,6 +37,7 @@
     "prettier": "^3.5.3",
     "sass": "^1.89.0",
     "terser": "^5.39.0",
+    "cssnano": "^7.0.7",
     "vite": "^6.3.2"
   }
 }
