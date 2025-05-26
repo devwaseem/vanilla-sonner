@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import cssnano from "cssnano";
 
 export default defineConfig({
   build: {
@@ -16,5 +15,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [cssnano({ preset: "default" })],
+  plugins: [],
 });
