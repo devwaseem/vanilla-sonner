@@ -1,5 +1,13 @@
-import { ToastOptions } from './models';
-import { plainTemplate, descriptionTemplate, successTemplate, buildTemplate, infoTemplate, warningTemplate, errorTemplate } from './templates';
+import { ToastOptions } from "./models";
+import {
+  plainTemplate,
+  descriptionTemplate,
+  successTemplate,
+  buildTemplate,
+  infoTemplate,
+  warningTemplate,
+  errorTemplate,
+} from "./templates";
 
 export default class Toast {
   id: string;
@@ -100,23 +108,30 @@ export default class Toast {
     this.toast.dataset.sonnerToast = "";
     this.toast.dataset.theme = this.options.theme || "light";
     this.toast.dataset.mounted = "false";
-    this.toast.dataset.hidden = "false"
-    this.toast.dataset.expanded = "false"
+    this.toast.dataset.hidden = "false";
+    this.toast.dataset.expanded = "false";
     this.toast.dataset.xPosition = this.xPosition;
     this.toast.dataset.yPosition = this.yPosition;
     this.toast.dataset.type = this.options.type;
-    this.toast.dataset.richColors = this.options.useRichColors ? "true" : "false";
+    this.toast.dataset.richColors = this.options.useRichColors
+      ? "true"
+      : "false";
 
     if (this.options.closeButton) {
-      this.toast.style.setProperty("--close-button-display", "var(--close-button-visible-display)");
+      this.toast.style.setProperty(
+        "--close-button-display",
+        "var(--close-button-visible-display)",
+      );
     }
 
-    this.toast.querySelector("[data-toast-close]")?.addEventListener("click", () => {
-      this.remove();
-      if (this.removalTimer) {
-        clearTimeout(this.removalTimer);
-      }
-    });
+    this.toast
+      .querySelector("[data-toast-close]")
+      ?.addEventListener("click", () => {
+        this.remove();
+        if (this.removalTimer) {
+          clearTimeout(this.removalTimer);
+        }
+      });
   }
 
   setCollapsedHeight(height: number) {
@@ -192,7 +207,10 @@ export default class Toast {
       clearTimeout(this.removalTimer);
     }
     this.removalTimer = null;
-    this.remainingTimeToRemove = Math.max(0, this.remainingTimeToRemove - (Date.now() - this.timeStarted));
+    this.remainingTimeToRemove = Math.max(
+      0,
+      this.remainingTimeToRemove - (Date.now() - this.timeStarted),
+    );
   }
 
   resumeRemoval() {

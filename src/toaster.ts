@@ -7,6 +7,7 @@ export class Toaster {
   maxToasts: number;
   expandedByDefault: boolean;
   enableCloseButton: boolean;
+  isToastsExpanded: boolean;
 
   constructor() {
     this.toasts = [];
@@ -18,23 +19,28 @@ export class Toaster {
 
     this.maxToasts = parseInt(this.container.getAttribute("max-toasts") || "3");
 
-    let expanded = this.container.getAttribute("expanded") || "false";
-    this.expandedByDefault = expanded == "true";
+    this.isToastsExpanded =
+      (this.container.getAttribute("expanded") || "false") === "true";
+    this.expandedByDefault = this.isToastsExpanded;
     if (!this.expandedByDefault) {
       this.container.addEventListener(
         "mouseenter",
-        this.#onMouseEnter.bind(this)
+        this.#onMouseEnter.bind(this),
       );
       this.container.addEventListener(
         "mouseleave",
-        this.#onMouseLeave.bind(this)
+        this.#onMouseOver.bind(this),
+      );
+      this.container.addEventListener("mouseout", this.#onMouseOver.bind(this));
+      this.container.addEventListener(
+        "mousemove",
+        this.#onMouseOver.bind(this),
       );
     }
 
     let enableCloseButton =
       this.container.getAttribute("close-button") || "false";
     this.enableCloseButton = enableCloseButton == "true";
-
   }
 
   get positions() {
@@ -61,14 +67,14 @@ export class Toaster {
     if (options.theme == undefined || options.theme == null) {
       let containerTheme = this.container.getAttribute("theme");
       if (containerTheme == "light" || containerTheme == "dark") {
-        options.theme = containerTheme
+        options.theme = containerTheme;
       }
     }
 
     if (options.useRichColors == undefined || options.useRichColors == null) {
       let containerRichColors = this.container.getAttribute("rich-colors");
       if (containerRichColors == "true") {
-        options.useRichColors = true
+        options.useRichColors = true;
       }
     }
 
@@ -89,11 +95,25 @@ export class Toaster {
       this.refresh();
     };
 
-    toast.onRemove = (id) => { };
+    toast.onRemove = (id) => {};
 
     if (this.expandedByDefault) {
       toast.setExpanded();
     }
+  }
+
+  expand() {
+    for (const toast of this.toasts) {
+      toast.setExpanded();
+    }
+    this.isToastsExpanded = true;
+  }
+
+  collapse() {
+    for (const toast of this.toasts) {
+      toast.setCollapsed();
+    }
+    this.isToastsExpanded = false;
   }
 
   refresh() {
@@ -103,15 +123,15 @@ export class Toaster {
 
     const { xPosition, yPosition } = this.positions;
     this.toasts.forEach((toast, index) => {
-      let reverseIndex = this.toasts.length - index
+      let reverseIndex = this.toasts.length - index;
       toast.setFront(false);
       toast.setIndex(reverseIndex);
       toast.setXPosition(xPosition);
       toast.setYPosition(yPosition);
       if (reverseIndex > this.maxToasts) {
-        toast.hide()
+        toast.hide();
       } else {
-        toast.show()
+        toast.show();
       }
     });
 
@@ -135,14 +155,33 @@ export class Toaster {
   }
 
   #onMouseEnter(_event: MouseEvent) {
-    for (const toast of this.toasts) {
-      toast.setExpanded();
-    }
+    this.expand();
   }
 
-  #onMouseLeave(_event: MouseEvent) {
-    for (const toast of this.toasts) {
-      toast.setCollapsed();
+  #onMouseOver(event: MouseEvent) {
+    if (this.toasts.length === 0) {
+      return;
+    }
+
+    const rects: DOMRect[] = [
+      ...Array.from(this.toasts).map((t) => t.element.getBoundingClientRect()),
+    ];
+
+    const left = Math.min(...rects.map((r) => r.left));
+    const top = Math.min(...rects.map((r) => r.top));
+    const right = Math.max(...rects.map((r) => r.right));
+    const bottom = Math.max(...rects.map((r) => r.bottom));
+
+    const isMouseInside =
+      event.clientX >= left &&
+      event.clientX <= right &&
+      event.clientY >= top &&
+      event.clientY <= bottom;
+
+    console.log({ isMouseInside, left, top, right, bottom });
+
+    if (!isMouseInside) {
+      this.collapse();
     }
   }
 }
