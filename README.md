@@ -197,7 +197,7 @@ Then, navigate to [http://localhost:5173/example/index.html](http://localhost:51
 
 ## 📜 License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/devwaseem/vanilla-sonner/blob/main/LICENSE) file for details.
 
 ## 🤝 Contributing
 
