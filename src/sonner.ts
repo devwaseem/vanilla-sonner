@@ -2,21 +2,25 @@ import "./style.scss";
 import { ToastOptions } from "./models";
 import { Toaster } from "./toaster";
 
-const toaster = new Toaster();
+let _toaster: Toaster | undefined;
+
+document.addEventListener("DOMContentLoaded", () => {
+  _toaster = new Toaster();
+});
 
 function toast(message: string) {
-  toaster.create({
+  _toaster?.create({
     message: message,
     type: "plain",
   });
 }
 
 toast.custom = function (options: ToastOptions) {
-  toaster.create(options);
+  _toaster?.create(options);
 };
 
 toast.message = function (title: string, description: string) {
-  toaster.create({
+  _toaster?.create({
     type: "description",
     message: title,
     description,
@@ -24,28 +28,28 @@ toast.message = function (title: string, description: string) {
 };
 
 toast.info = function (message: string) {
-  toaster.create({
+  _toaster?.create({
     type: "info",
     message,
   });
 };
 
 toast.success = function (message: string) {
-  toaster.create({
+  _toaster?.create({
     type: "success",
     message,
   });
 };
 
 toast.warning = function (message: string) {
-  toaster.create({
+  _toaster?.create({
     type: "warning",
     message,
   });
 };
 
 toast.error = function (message: string) {
-  toaster.create({
+  _toaster?.create({
     type: "error",
     message,
   });
@@ -59,4 +63,4 @@ declare global {
 
 window.toast = toast;
 
-export { Toaster, toaster, toast };
+export { Toaster, toast };
