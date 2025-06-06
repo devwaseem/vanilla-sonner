@@ -5,7 +5,7 @@ export default defineConfig({
     lib: {
       entry: "src/sonner.ts",
       name: "Sonner",
-      fileName: (format) => `sonner.${format}.min.js`,
+      fileName: (format) => `vanilla-sonner.${format}.min.js`,
       formats: ["es", "umd"],
     },
     minify: true,
