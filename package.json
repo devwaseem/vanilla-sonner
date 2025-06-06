@@ -1,17 +1,17 @@
 {
   "name": "vanilla-sonner",
   "version": "0.2.0",
-  "main": "dist/sonner.umd.min.js",
-  "module": "dist/sonner.es.min.js",
+  "main": "dist/vanilla-sonner.umd.min.js",
+  "module": "dist/vanilla-sonner.es.min.js",
   "types": "dist/index.d.ts",
-  "style": "dist/sonner.min.css",
+  "style": "dist/vanilla-sonner.min.css",
   "exports": {
     ".": {
-      "import": "./dist/sonner.es.min.js",
-      "require": "./dist/sonner.umd.min.js",
-      "default": "./dist/sonner.es.min.js"
+      "import": "./dist/vanilla-sonner.es.min.js",
+      "require": "./dist/vanilla-sonner.umd.min.js",
+      "default": "./dist/vanilla-sonner.es.min.js"
     },
-    "./style.css": "./dist/sonner.min.css"
+    "./style.css": "./dist/vanilla-sonner.min.css"
   },
   "files": [
     "dist"
