@@ -29,12 +29,12 @@ via CDN:
 
     ...
 
-    <link href="https://cdn.jsdelivr.net/npm/vanilla-sonner@1.0.0/dist/sonner.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-sonner@0.2.0/dist/sonner.min.css" rel="stylesheet" />
 
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@1.0.0/dist/sonner.umd.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@0.2.0/dist/sonner.umd.min.js" type="module"></script>
 
     <!-- If you're using ES Modules -->
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@1.0.0/dist/sonner.es.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@0.2.0/dist/sonner.es.min.js" type="module"></script>
 
     
     ...
