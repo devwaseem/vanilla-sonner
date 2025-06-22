@@ -79,7 +79,7 @@ toast.error = function (
 toast.promise = function (
   promise: Promise<any>,
   message: {
-    initial: string,
+    loading: string,
     success: string,
     error: string
   },
@@ -89,7 +89,7 @@ toast.promise = function (
     type: "promise",
     promiseOptions: {
       promise,
-      initialMessage: message.initial,
+      loadingMessage: message.loading,
       successMessage: message.success,
       errorMessage: message.error,
     },

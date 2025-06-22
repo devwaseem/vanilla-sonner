@@ -16,7 +16,7 @@ export interface ToastOptions {
     toastData?: Record<string, string>;
     promiseOptions?: {
         promise: Promise<any>;
-        initialMessage?: string;
+        loadingMessage?: string;
         successMessage?: string;
         errorMessage?: string;
     }

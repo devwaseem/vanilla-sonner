@@ -161,14 +161,14 @@ export default class Toast {
         }
 
         promiseOptions?.promise.then(() => {
-          setMessage.bind(this)(promiseOptions?.successMessage || promiseOptions?.initialMessage || "");
+          setMessage.bind(this)(promiseOptions?.successMessage || promiseOptions?.loadingMessage || "");
           setCompleted.bind(this)()
         }).catch(() => {
-          setMessage.bind(this)(promiseOptions?.errorMessage || promiseOptions?.initialMessage || "");
+          setMessage.bind(this)(promiseOptions?.errorMessage || promiseOptions?.loadingMessage || "");
           setCompleted.bind(this)()
         });
 
-        setMessage.bind(this)(promiseOptions?.initialMessage || "");
+        setMessage.bind(this)(promiseOptions?.loadingMessage || "");
         break;
     }
 
