@@ -274,11 +274,11 @@
 
 /* Level based CSS */
 
-[data-toast-level],[data-toast-promise] {
+[data-toast-container-horizontal] {
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: center;
+  align-items: start;
   justify-content: start;
 }
 
@@ -322,4 +322,25 @@
 
 [data-toast-loader-completed][data-show="true"] {
   display: block;
+}
+
+/* Action Template CSS */
+
+[data-toast-action] {
+  justify-content: space-between;
+}
+
+[data-toast-action-button] {
+  background-color: var(--info-bg);
+  color: var(--info-text);
+  border: 0;
+  padding: 4px 8px;
+  border-radius: 12%;
+  border: 1px solid var(--info-border);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--info-border);
+  }
+  
 }

@@ -14,6 +14,8 @@ import warningTemplate from "./warning.html?raw";
 import errorTemplate from "./error.html?raw";
 //@ts-ignore
 import promiseTemplate from "./promise.html?raw";
+//@ts-ignore
+import actionTemplate from "./action.html?raw";
 
 function buildTemplate(template: string, replacements: Record<string, string>) {
     const content = template.replace(/{{ ?(\w+) ?}}/g, (_, key) => key in replacements ? replacements[key] : "");
@@ -28,5 +30,6 @@ export {
     infoTemplate,
     warningTemplate,
     errorTemplate,
-    promiseTemplate
+    promiseTemplate,
+    actionTemplate
 };

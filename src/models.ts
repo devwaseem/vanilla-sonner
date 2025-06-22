@@ -20,4 +20,6 @@ export interface ToastOptions {
         successMessage?: string;
         errorMessage?: string;
     }
+    onClose?: (id: string) => void;
+    onRemove?: (id: string) => void;
 }

@@ -15,13 +15,14 @@
             <button onclick="makeToast('Bottom Center', 'bottom-center')">bottom-center</button>
             <button onclick="makeToast('Bottom Right', 'bottom-right')">bottom-right</button>
             <button onclick="toast.message('Update available', 'New version available for download')">Description</button>
+            <button onclick="toast.info('This is an info toast');">Info</button>
             <button onclick="toast.success('Event created successfully!')">Success</button>
-            <button onclick="toast.info('5 Tasks completed!')">Info</button>
-            <button onclick="toast.warning('Please save your changes before closing!')">Warning</button>
-            <button onclick="toast.error('Something went wrong')">Error</button>
+            <button onclick="toast.warning('This is a warning toast')">Warning</button>
+            <button onclick="toast.error('This is an error toast');">Error</button>
             <button onclick="toggleTheme()">Toggle Theme</button>
             <button onclick="runCustomToast()">Custom Toast</button>
             <button onclick="runPromiseToast()">Promise Toast</button>
+            <button onclick="runActionToast()">Action</button>
         </div>
         <ol id="sonner-toast-container"
             position="bottom-right"
@@ -77,6 +78,15 @@
                 error: "Error message"
               }
             )
+          }
+
+          function runActionToast() {
+            toast.action("Document Ready", {
+              label: "View",
+              onClick: () => {
+                alert("Action button clicked!");
+              },
+            });
           }
         </script>
     </body>

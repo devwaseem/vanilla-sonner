@@ -9,6 +9,7 @@ import {
   warningTemplate,
   errorTemplate,
   promiseTemplate,
+  actionTemplate,
 } from "./templates";
 
 export default class Toast {
@@ -108,10 +109,17 @@ export default class Toast {
         });
         break;
       case "action":
-        this.toast.innerHTML = buildTemplate(errorTemplate, {
+        this.toast.innerHTML = buildTemplate(actionTemplate, {
           id: this.id,
           message: this.options.message || "",
+          "action_label": this.options.action?.label || "Action",
         });
+        this.toast
+          .querySelector("[data-toast-action-button]")
+          ?.addEventListener("click", () => {
+            this.options.action?.onClick();
+            this.remove();
+          });
         break;
       case "custom":
         if (!this.options.template_id) {
@@ -290,6 +298,11 @@ export default class Toast {
   remove() {
     this.hide();
     this.onClose?.(this.toast.id);
+
+    if (this.removalTimer) {
+      clearTimeout(this.removalTimer);
+    }
+
     setTimeout(() => {
       this.element.remove();
       if (this.onRemove) {

@@ -110,6 +110,19 @@ toast.custom = function (
   });
 };
 
+toast.action = function (
+  message: string,
+  action: { label: string; onClick: () => void },
+  duration: number | undefined = undefined
+) {
+  _toaster?.create({
+    type: "action",
+    message,
+    action,
+    duration,
+  });
+};
+
 declare global {
   interface Window {
     toast: (message: string) => void;
