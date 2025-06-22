@@ -12,9 +12,11 @@ import infoTemplate from "./info.html?raw";
 import warningTemplate from "./warning.html?raw";
 //@ts-ignore
 import errorTemplate from "./error.html?raw";
+//@ts-ignore
+import promiseTemplate from "./promise.html?raw";
 
 function buildTemplate(template: string, replacements: Record<string, string>) {
-    const content = template.replace(/{{ ?(\w+) ?}}/g, (_, key) => replacements[key]);
+    const content = template.replace(/{{ ?(\w+) ?}}/g, (_, key) => key in replacements ? replacements[key] : "");
     return baseTemplate.replace(/{{ ?slot ?}}/g, content.trim());
 }
 
@@ -25,5 +27,6 @@ export {
     successTemplate,
     infoTemplate,
     warningTemplate,
-    errorTemplate
+    errorTemplate,
+    promiseTemplate
 };

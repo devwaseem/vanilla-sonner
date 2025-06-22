@@ -90,12 +90,16 @@ export class Toaster {
     this.refresh();
     toast.setMounted();
 
+    toast.onUpdate = (id) => {
+      this.refresh();
+    };
+
     toast.onClose = (id) => {
       this.toasts = this.toasts.filter((toast) => toast.id != id);
       this.refresh();
     };
 
-    toast.onRemove = (id) => {};
+    toast.onRemove = (id) => { };
 
     if (this.expandedByDefault) {
       toast.setExpanded();
@@ -151,7 +155,6 @@ export class Toaster {
     }
 
     frontToast.setFront(true);
-    console.log("refresh complete");
   }
 
   #onMouseEnter(_event: MouseEvent) {
@@ -177,8 +180,6 @@ export class Toaster {
       event.clientX <= right &&
       event.clientY >= top &&
       event.clientY <= bottom;
-
-    console.log({ isMouseInside, left, top, right, bottom });
 
     if (!isMouseInside) {
       this.collapse();

@@ -8,50 +8,105 @@ document.addEventListener("DOMContentLoaded", () => {
   _toaster = new Toaster();
 });
 
-function toast(message: string) {
+function toast(
+  message: string,
+  duration: number | undefined = undefined
+) {
   _toaster?.create({
     message: message,
     type: "plain",
+    duration
   });
 }
 
-toast.custom = function (options: ToastOptions) {
-  _toaster?.create(options);
-};
-
-toast.message = function (title: string, description: string) {
+toast.message = function (
+  title: string,
+  description: string,
+  duration: number | undefined = undefined
+) {
   _toaster?.create({
     type: "description",
     message: title,
     description,
+    duration
   });
 };
 
-toast.info = function (message: string) {
+toast.info = function (
+  message: string,
+  duration: number | undefined = undefined
+) {
   _toaster?.create({
     type: "info",
     message,
+    duration
   });
 };
 
-toast.success = function (message: string) {
+toast.success = function (
+  message: string,
+  duration: number | undefined = undefined
+) {
   _toaster?.create({
     type: "success",
     message,
+    duration
   });
 };
 
-toast.warning = function (message: string) {
+toast.warning = function (
+  message: string,
+  duration: number | undefined = undefined
+) {
   _toaster?.create({
     type: "warning",
     message,
+    duration
   });
 };
 
-toast.error = function (message: string) {
+toast.error = function (
+  message: string,
+  duration: number | undefined = undefined
+) {
   _toaster?.create({
     type: "error",
     message,
+    duration
+  });
+};
+
+toast.promise = function (
+  promise: Promise<any>,
+  message: {
+    initial: string,
+    success: string,
+    error: string
+  },
+  duration: number | undefined = undefined
+) {
+  _toaster?.create({
+    type: "promise",
+    promiseOptions: {
+      promise,
+      initialMessage: message.initial,
+      successMessage: message.success,
+      errorMessage: message.error,
+    },
+    duration
+  });
+};
+
+toast.custom = function (
+  template_id: string,
+  data: Record<string, string>,
+  duration: number | undefined = undefined
+) {
+  _toaster?.create({
+    type: "custom",
+    toastData: data,
+    template_id,
+    duration
   });
 };
 

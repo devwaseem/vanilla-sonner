@@ -274,11 +274,11 @@
 
 /* Level based CSS */
 
-[data-toast-level] {
+[data-toast-level],[data-toast-promise] {
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: start;
+  align-items: center;
   justify-content: start;
 }
 
@@ -289,4 +289,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Promise Template CSS */
+
+[data-toast-loader-running][data-show="false"] {
+  display: none;
+}
+
+[data-toast-loader-completed][data-show="false"] {
+  display: none;
+}
+
+[data-toast-loader-running][data-show="true"] {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--info-bg);
+  border-bottom-color: var(--info-text);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+  }
+}
+
+[data-toast-loader-completed][data-show="true"] {
+  display: block;
 }

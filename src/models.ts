@@ -1,6 +1,6 @@
 export interface ToastOptions {
-    type: "plain" | "description" | "success" | "info" | "warning" | "error" | "action";
-    message: string;
+    type: "plain" | "description" | "success" | "info" | "warning" | "error" | "action" | "promise" | "custom";
+    message?: string;
     theme?: "light" | "dark";
     description?: string;
     xPosition?: "left" | "right" | "center";
@@ -12,4 +12,12 @@ export interface ToastOptions {
         onClick: () => void;
     }
     closeButton?: boolean;
+    template_id?: string;
+    toastData?: Record<string, string>;
+    promiseOptions?: {
+        promise: Promise<any>;
+        initialMessage?: string;
+        successMessage?: string;
+        errorMessage?: string;
+    }
 }
