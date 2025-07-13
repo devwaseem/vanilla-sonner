@@ -8,6 +8,7 @@ export class Toaster {
   expandedByDefault: boolean;
   enableCloseButton: boolean;
   isToastsExpanded: boolean;
+  isDarkTheme: boolean;
 
   constructor() {
     this.toasts = [];
@@ -41,6 +42,20 @@ export class Toaster {
     let enableCloseButton =
       this.container.getAttribute("close-button") || "false";
     this.enableCloseButton = enableCloseButton == "true";
+
+    let theme = this.container.getAttribute("theme");
+    this.isDarkTheme = theme == "dark";
+
+    if (theme == "system") {
+      const prefersDarkScheme = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      );
+      this.isDarkTheme = prefersDarkScheme.matches;
+      prefersDarkScheme.addEventListener("change", (event) => {
+        this.isDarkTheme = event.matches;
+        this.refresh();
+      });
+    }
   }
 
   get positions() {
@@ -99,7 +114,7 @@ export class Toaster {
       this.refresh();
     };
 
-    toast.onRemove = (id) => { };
+    toast.onRemove = (id) => {};
 
     if (this.expandedByDefault) {
       toast.setExpanded();
@@ -132,6 +147,7 @@ export class Toaster {
       toast.setIndex(reverseIndex);
       toast.setXPosition(xPosition);
       toast.setYPosition(yPosition);
+      toast.setTheme(this.isDarkTheme ? "dark" : "light");
       if (reverseIndex > this.maxToasts) {
         toast.hide();
       } else {

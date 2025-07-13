@@ -287,6 +287,10 @@ export default class Toast {
     }
   }
 
+  setTheme(theme: "light" | "dark") {
+    this.toast.dataset.theme = theme;
+  }
+
   #setupRemoval() {
     if (this.duration > 0) {
       if (this.removalTimer) {
