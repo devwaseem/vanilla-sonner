@@ -8,7 +8,6 @@ export class Toaster {
   expandedByDefault: boolean;
   enableCloseButton: boolean;
   isToastsExpanded: boolean;
-  isDarkTheme: boolean;
 
   constructor() {
     this.toasts = [];
@@ -44,18 +43,25 @@ export class Toaster {
     this.enableCloseButton = enableCloseButton == "true";
 
     let theme = this.container.getAttribute("theme");
-    this.isDarkTheme = theme == "dark";
-
     if (theme == "system") {
       const prefersDarkScheme = window.matchMedia(
         "(prefers-color-scheme: dark)",
       );
-      this.isDarkTheme = prefersDarkScheme.matches;
       prefersDarkScheme.addEventListener("change", (event) => {
-        this.isDarkTheme = event.matches;
         this.refresh();
       });
     }
+  }
+
+  get isDarkTheme() {
+    let theme = this.container.getAttribute("theme");
+    if (theme == "system") {
+      const prefersDarkScheme = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      );
+      return prefersDarkScheme.matches;
+    }
+    return this.container.getAttribute("theme") == "dark";
   }
 
   get positions() {
@@ -141,13 +147,14 @@ export class Toaster {
     }
 
     const { xPosition, yPosition } = this.positions;
+    const isDarkTheme = this.isDarkTheme;
     this.toasts.forEach((toast, index) => {
       let reverseIndex = this.toasts.length - index;
       toast.setFront(false);
       toast.setIndex(reverseIndex);
       toast.setXPosition(xPosition);
       toast.setYPosition(yPosition);
-      toast.setTheme(this.isDarkTheme ? "dark" : "light");
+      toast.setTheme(isDarkTheme ? "dark" : "light");
       if (reverseIndex > this.maxToasts) {
         toast.hide();
       } else {

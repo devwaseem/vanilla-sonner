@@ -22,7 +22,6 @@
             <button onclick="toggleTheme()">Toggle Theme</button>
             <button onclick="runCustomToast()">Custom Toast</button>
             <button onclick="runPromiseToast()">Promise Toast</button>
-            <button onclick="runActionToast()">Action</button>
         </div>
         <ol id="sonner-toast-container"
             position="bottom-right"
@@ -66,10 +65,13 @@
             if (theme == "light") {
                 container.setAttribute("theme", "dark");
                 theme = "dark";
-            } else {
+            } else if (theme == "dark") {
+                container.setAttribute("theme", "system");
+                theme = "system";
+          } else {
                 container.setAttribute("theme", "light");
                 theme = "light";
-            }
+          }
             toast.success("Theme changed to " + theme)
         }
 
