@@ -59,6 +59,10 @@
     --action-button-hover-border: var(--gray4);
     --action-button-hover-text: var(--gray12);
 
+    --close-button-bg: var(--action-button-bg);
+    --close-button-border: var(--action-button-bg);
+    --close-button-text: var(--action-button-text);
+
     --success-bg: hsl(143, 85%, 96%);
     --success-border: hsl(145, 92%, 91%);
     --success-text: hsl(140, 100%, 27%);
@@ -111,6 +115,10 @@
     --action-button-hover-bg: var(--gray1);
     --action-button-hover-border: var(--gray1);
     --action-button-hover-text: black;
+
+    --close-button-bg: var(--action-button-bg);
+    --close-button-border: var(--action-button-text);
+    --close-button-text: var(--action-button-text);
 
     --success-bg: hsl(150, 100%, 6%);
     --success-border: hsl(147, 100%, 12%);
@@ -299,10 +307,9 @@
 .sonner-toast-close {
   width: 20px;
   height: 20px;
-  color: var(--action-button-text);
-  background-color: var(--action-button-bg);
-  border: 1px solid var(--action-button-border);;
-  border-color: var(--action-button-border);
+  color: var(--close-button-text);
+  background-color: var(--close-button-bg);
+  border: 1px solid var(--close-button-border);;
   border-radius: 50%;
   display: var(--close-button-display);
   align-items: center;
