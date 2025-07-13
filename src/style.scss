@@ -46,7 +46,6 @@
 
 
   // Themes
-
   &[data-theme="light"] {
     --normal-bg: #fff;
     --normal-border: var(--gray4);
@@ -62,42 +61,42 @@
     --success-bg: hsl(143, 85%, 96%);
     --success-border: hsl(145, 92%, 91%);
     --success-text: hsl(140, 100%, 27%);
-    --success-button-bg: var(--success-bg);
-    --success-button-border: var(--success-bg);
-    --success-button-text: var(--success-text);
-    --success-button-hover-bg: var(--success-text);
-    --success-button-hover-border: var(--success-text);
-    --success-button-hover-text: var(--success-bg);
+    --success-action-button-bg: var(--success-bg);
+    --success-action-button-border: var(--success-bg);
+    --success-action-button-text: var(--success-text);
+    --success-action-button-hover-bg: var(--success-text);
+    --success-action-button-hover-border: var(--success-text);
+    --success-action-button-hover-text: var(--success-bg);
 
     --info-bg: hsl(208, 100%, 97%);
     --info-border: hsl(221, 91%, 91%);
     --info-text: hsl(210, 92%, 45%);
-    --info-button-bg: var(--info-bg);
-    --info-button-border: var(--info-bg);
-    --info-button-text: var(--info-text);
-    --info-button-hover-bg: var(--info-text);
-    --info-button-hover-border: var(--info-text);
-    --info-button-hover-text: var(--info-bg);
+    --info-action-button-bg: var(--info-bg);
+    --info-action-button-border: var(--info-bg);
+    --info-action-button-text: var(--info-text);
+    --info-action-button-hover-bg: var(--info-text);
+    --info-action-button-hover-border: var(--info-text);
+    --info-action-button-hover-text: var(--info-bg);
 
     --warning-bg: hsl(49, 100%, 97%);
     --warning-border: hsl(49, 91%, 91%);
     --warning-text: hsl(31, 92%, 45%);
-    --warning-button-bg: var(--warning-bg);
-    --warning-button-border: var(--warning-bg);
-    --warning-button-text: var(--warning-text);
-    --warning-button-hover-bg: var(--warning-text);
-    --warning-button-hover-border: var(--warning-text);
-    --warning-button-hover-text: var(--warning-bg);
+    --warning-action-button-bg: var(--warning-bg);
+    --warning-action-button-border: var(--warning-bg);
+    --warning-action-button-text: var(--warning-text);
+    --warning-action-button-hover-bg: var(--warning-text);
+    --warning-action-button-hover-border: var(--warning-text);
+    --warning-action-button-hover-text: var(--warning-bg);
 
     --error-bg: hsl(359, 100%, 97%);
     --error-border: hsl(359, 100%, 94%);
     --error-text: hsl(360, 100%, 45%);
-    --error-button-bg: var(--error-bg);
-    --error-button-border: var(--error-bg);
-    --error-button-text: var(--error-text);
-    --error-button-hover-bg: var(--error-text);
-    --error-button-hover-border: var(--error-text);
-    --error-button-hover-text: var(--error-bg);
+    --error-action-button-bg: var(--error-bg);
+    --error-action-button-border: var(--error-bg);
+    --error-action-button-text: var(--error-text);
+    --error-action-button-hover-bg: var(--error-text);
+    --error-action-button-hover-border: var(--error-text);
+    --error-action-button-hover-text: var(--error-bg);
   }
 
   &[data-theme="dark"] {
@@ -115,43 +114,43 @@
     --success-bg: hsl(150, 100%, 6%);
     --success-border: hsl(147, 100%, 12%);
     --success-text: hsl(150, 86%, 65%);
-    --success-button-bg: var(--success-bg);
+    --success-action-button-bg: var(--success-bg);
     --sucesss-button-border: var(--success-bg);
-    --success-button-text: var(--success-text);
-    --success-button-hover-bg: var(--success-text);
-    --success-button-hover-border: var(--success-text);
-    --success-button-hover-text: var(--success-bg);
+    --success-action-button-text: var(--success-text);
+    --success-action-button-hover-bg: var(--success-text);
+    --success-action-button-hover-border: var(--success-text);
+    --success-action-button-hover-text: var(--success-bg);
 
     --info-bg: hsl(215, 100%, 6%);
     --info-border: hsl(223, 100%, 12%);
     --info-text: hsl(216, 87%, 65%);
-    --info-button-bg: var(--info-bg);
-    --info-button-border: var(--info-bg);
-    --info-button-text: var(--info-text);
-    --info-button-hover-bg: var(--info-text);
-    --info-button-hover-border: var(--info-text);
-    --info-button-hover-text: var(--info-bg);
+    --info-action-button-bg: var(--info-bg);
+    --info-action-button-border: var(--info-bg);
+    --info-action-button-text: var(--info-text);
+    --info-action-button-hover-bg: var(--info-text);
+    --info-action-button-hover-border: var(--info-text);
+    --info-action-button-hover-text: var(--info-bg);
 
     --warning-bg: hsl(64, 100%, 6%);
     --warning-border: hsl(60, 100%, 12%);
     --warning-text: hsl(46, 87%, 65%);
-    --warning-button-bg: hsl(64, 100%, 6%);
-    --warning-button-border: hsl(64, 100%, 6%);
-    --warning-button-text: var(--warning-text);
-    --warning-button-hover-bg: var(--warning-text);
-    --warning-button-hover-border: var(--warning-text);
-    --warning-button-hover-text: var(--warning-bg);
+    --warning-action-button-bg: hsl(64, 100%, 6%);
+    --warning-action-button-border: hsl(64, 100%, 6%);
+    --warning-action-button-text: var(--warning-text);
+    --warning-action-button-hover-bg: var(--warning-text);
+    --warning-action-button-hover-border: var(--warning-text);
+    --warning-action-button-hover-text: var(--warning-bg);
 
     --error-bg: hsl(358, 76%, 10%);
-    --error-button-bg: hsl(358, 76%, 18%);
+    --error-action-button-bg: hsl(358, 76%, 18%);
     --error-border: hsl(357, 89%, 16%);
     --error-text: hsl(358, 100%, 81%);
-    --error-button-bg: hsl(358, 76%, 10%);
-    --error-button-border: hsl(358, 76%, 10%);
-    --error-button-text: var(--error-text);
-    --error-button-hover-bg: var(--error-text);
-    --error-button-hover-border: var(--error-text);
-    --error-button-hover-text: var(--error-bg);
+    --error-action-button-bg: hsl(358, 76%, 10%);
+    --error-action-button-border: hsl(358, 76%, 10%);
+    --error-action-button-text: var(--error-text);
+    --error-action-button-hover-bg: var(--error-text);
+    --error-action-button-hover-border: var(--error-text);
+    --error-action-button-hover-text: var(--error-bg);
   }
 
   &[data-rich-colors="true"] {
@@ -160,12 +159,12 @@
       border-color: var(--success-border);
       color: var(--success-text);
 
-      --action-button-bg: var(--success-button-bg);
-      --action-button-border: var(--success-button-border);
-      --action-button-text: var(--success-button-text);
-      --action-button-hover-bg: var(--success-button-hover-bg);
-      --action-button-hover-border: var(--success-button-hover-border);
-      --action-button-hover-text: var(--success-button-hover-text);
+      --action-button-bg: var(--success-action-button-bg);
+      --action-button-border: var(--success-action-button-border);
+      --action-button-text: var(--success-action-button-text);
+      --action-button-hover-bg: var(--success-action-button-hover-bg);
+      --action-button-hover-border: var(--success-action-button-hover-border);
+      --action-button-hover-text: var(--success-action-button-hover-text);
     }
 
     &[data-type="info"] {
@@ -173,12 +172,12 @@
       border-color: var(--info-border);
       color: var(--info-text);
 
-      --action-button-bg: var(--info-button-bg);
-      --action-button-border: var(--info-button-border);
-      --action-button-text: var(--info-button-text);
-      --action-button-hover-bg: var(--info-button-hover-bg);
-      --action-button-hover-border: var(--info-button-hover-border);
-      --action-button-hover-text: var(--info-button-hover-text);
+      --action-button-bg: var(--info-action-button-bg);
+      --action-button-border: var(--info-action-button-border);
+      --action-button-text: var(--info-action-button-text);
+      --action-button-hover-bg: var(--info-action-button-hover-bg);
+      --action-button-hover-border: var(--info-action-button-hover-border);
+      --action-button-hover-text: var(--info-action-button-hover-text);
     }
 
     &[data-type="warning"] {
@@ -186,12 +185,12 @@
       border-color: var(--warning-border);
       color: var(--warning-text);
 
-      --action-button-bg: var(--warning-button-bg); 
-      --action-button-border: var(--warning-button-border);
-      --action-button-text: var(--warning-button-text);
-      --action-button-hover-bg: var(--warning-button-hover-bg);
-      --action-button-hover-border: var(--warning-button-hover-border);
-      --action-button-hover-text: var(--warning-button-hover-text);
+      --action-button-bg: var(--warning-action-button-bg); 
+      --action-button-border: var(--warning-action-button-border);
+      --action-button-text: var(--warning-action-button-text);
+      --action-button-hover-bg: var(--warning-action-button-hover-bg);
+      --action-button-hover-border: var(--warning-action-button-hover-border);
+      --action-button-hover-text: var(--warning-action-button-hover-text);
     }
 
     &[data-type="error"] {
@@ -199,12 +198,12 @@
       border-color: var(--error-border);
       color: var(--error-text);
 
-      --action-button-bg: var(--error-button-bg); 
-      --action-button-border: var(--error-button-border);
-      --action-button-text: var(--error-button-text);
-      --action-button-hover-bg: var(--error-button-hover-bg);
-      --action-button-hover-border: var(--error-button-hover-border);
-      --action-button-hover-text: var(--error-button-hover-text);
+      --action-button-bg: var(--error-action-button-bg); 
+      --action-button-border: var(--error-action-button-border);
+      --action-button-text: var(--error-action-button-text);
+      --action-button-hover-bg: var(--error-action-button-hover-bg);
+      --action-button-hover-border: var(--error-action-button-hover-border);
+      --action-button-hover-text: var(--error-action-button-hover-text);
     }
   }
 
