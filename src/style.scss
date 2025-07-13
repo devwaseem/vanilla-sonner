@@ -53,11 +53,11 @@
     --normal-text: var(--gray12);
 
     --action-button-bg: var(--normal-bg);
-    --action-button-border: var(--gray4);
-    --action-button-text: var(--gray12);
+    --action-button-border: var(--normal-bg);
+    --action-button-text: var(--normal-text);
     --action-button-hover-bg: var(--normal-bg);
-    --action-button-hover-border: var(--gray4);
-    --action-button-hover-text: var(--gray12);
+    --action-button-hover-border: var(--normal-bg);
+    --action-button-hover-text: var(--normal-text);
 
     --close-button-bg: var(--action-button-bg);
     --close-button-border: var(--action-button-bg);
@@ -109,15 +109,15 @@
     --normal-border: hsl(0, 0%, 20%);
     --normal-text: var(--gray1);
 
-    --action-button-bg: var(--gray1);
-    --action-button-border: var(--gray1);
-    --action-button-text: black;
-    --action-button-hover-bg: var(--gray1);
-    --action-button-hover-border: var(--gray1);
-    --action-button-hover-text: black;
+    --action-button-bg: var(--normal-bg);
+    --action-button-border: var(--normal-bg);
+    --action-button-text: var(--normal-text);
+    --action-button-hover-bg: var(--normal-bg);
+    --action-button-hover-border: var(--normal-bg);
+    --action-button-hover-text: var(--normal-text);
 
     --close-button-bg: var(--action-button-bg);
-    --close-button-border: var(--action-button-text);
+    --close-button-border: var(--action-button-bg);
     --close-button-text: var(--action-button-text);
 
     --success-bg: hsl(150, 100%, 6%);
