@@ -1,5 +1,4 @@
 import "./style.scss";
-import { ToastOptions } from "./models";
 import { Toaster } from "./toaster";
 
 let _toaster: Toaster | undefined;
@@ -8,82 +7,78 @@ document.addEventListener("DOMContentLoaded", () => {
   _toaster = new Toaster();
 });
 
-function toast(
-  message: string,
-  duration: number | undefined = undefined
-) {
+interface ToastConfig {
+  action?: { label: string; onClick: () => void };
+  duration?: number;
+}
+
+function toast(message: string, config: ToastConfig = {}) {
   _toaster?.create({
     message: message,
     type: "plain",
-    duration
+    action: config.action,
+    duration: config.duration,
   });
 }
 
 toast.message = function (
   title: string,
   description: string,
-  duration: number | undefined = undefined
+  config: ToastConfig = {},
 ) {
   _toaster?.create({
     type: "description",
     message: title,
     description,
-    duration
+    action: config.action,
+    duration: config.duration,
   });
 };
 
-toast.info = function (
-  message: string,
-  duration: number | undefined = undefined
-) {
+toast.info = function (message: string, config: ToastConfig = {}) {
   _toaster?.create({
     type: "info",
     message,
-    duration
+    action: config.action,
+    duration: config.duration,
   });
 };
 
-toast.success = function (
-  message: string,
-  duration: number | undefined = undefined
-) {
+toast.success = function (message: string, config: ToastConfig = {}) {
   _toaster?.create({
     type: "success",
     message,
-    duration
+    action: config.action,
+    duration: config.duration,
   });
 };
 
-toast.warning = function (
-  message: string,
-  duration: number | undefined = undefined
-) {
+toast.warning = function (message: string, config: ToastConfig = {}) {
   _toaster?.create({
     type: "warning",
     message,
-    duration
+    action: config.action,
+    duration: config.duration,
   });
 };
 
-toast.error = function (
-  message: string,
-  duration: number | undefined = undefined
-) {
+toast.error = function (message: string, config: ToastConfig = {}) {
   _toaster?.create({
     type: "error",
     message,
-    duration
+    action: config.action,
+    duration: config.duration,
   });
 };
 
 toast.promise = function (
   promise: Promise<any>,
   message: {
-    loading: string,
-    success: string,
-    error: string
+    loading: string;
+    success: string;
+    error: string;
   },
-  duration: number | undefined = undefined
+  config: ToastConfig = {},
 ) {
   _toaster?.create({
     type: "promise",
@@ -93,33 +88,21 @@ toast.promise = function (
       successMessage: message.success,
       errorMessage: message.error,
     },
-    duration
+    action: config.action,
+    duration: config.duration,
   });
 };
 
 toast.custom = function (
   template_id: string,
   data: Record<string, string>,
-  duration: number | undefined = undefined
+  config: ToastConfig = {},
 ) {
   _toaster?.create({
     type: "custom",
     toastData: data,
     template_id,
-    duration
-  });
-};
-
-toast.action = function (
-  message: string,
-  action: { label: string; onClick: () => void },
-  duration: number | undefined = undefined
-) {
-  _toaster?.create({
-    type: "action",
-    message,
-    action,
-    duration,
+    duration: config.duration,
   });
 };
 

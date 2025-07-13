@@ -14,16 +14,17 @@ import warningTemplate from "./warning.html?raw";
 import errorTemplate from "./error.html?raw";
 //@ts-ignore
 import promiseTemplate from "./promise.html?raw";
-//@ts-ignore
-import actionTemplate from "./action.html?raw";
 
-function buildTemplate(template: string, replacements: Record<string, string>) {
-    const content = template.replace(/{{ ?(\w+) ?}}/g, (_, key) => key in replacements ? replacements[key] : "");
-    return baseTemplate.replace(/{{ ?slot ?}}/g, content.trim());
+
+function renderTemplate(template: string, replacements: Record<string, string>) {
+    const content = template.replace(/{{ ?(\w+) ?}}/g, (_, key) => key in replacements ? replacements[key] : "")
+    return content.trim()
 }
 
+
 export {
-    buildTemplate,
+    renderTemplate,
+    baseTemplate,
     plainTemplate,
     descriptionTemplate,
     successTemplate,
@@ -31,5 +32,4 @@ export {
     warningTemplate,
     errorTemplate,
     promiseTemplate,
-    actionTemplate
 };

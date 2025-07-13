@@ -1,16 +1,20 @@
-import { clear } from "console";
 import { ToastOptions } from "./models";
 import {
+  baseTemplate,
   plainTemplate,
   descriptionTemplate,
   successTemplate,
-  buildTemplate,
+  renderTemplate,
   infoTemplate,
   warningTemplate,
   errorTemplate,
   promiseTemplate,
-  actionTemplate,
 } from "./templates";
+
+function buildToast(template: string, replacements: Record<string, string>) {
+  const content = renderTemplate(template, replacements);
+  return baseTemplate.replace(/{{ ?slot ?}}/g, content.trim());
+}
 
 export default class Toast {
   id: string;
@@ -39,7 +43,7 @@ export default class Toast {
   constructor(options: ToastOptions) {
     this.id = `toast-${Math.random().toString(26).substring(4)}-${Date.now()}`;
     this.options = options;
-    this.toast = document.createElement("div");
+    this.toast = document.createElement("li");
     this.toast.setAttribute("id", this.id);
     this.setXPosition(options.xPosition || "right");
     this.setYPosition(options.yPosition || "bottom");
@@ -72,54 +76,41 @@ export default class Toast {
   #setup() {
     switch (this.options.type) {
       case "plain":
-        this.toast.innerHTML = buildTemplate(plainTemplate, {
+        this.toast.innerHTML = buildToast(plainTemplate, {
           id: this.id,
           message: this.options.message || "",
         });
         break;
       case "description":
-        this.toast.innerHTML = buildTemplate(descriptionTemplate, {
+        this.toast.innerHTML = buildToast(descriptionTemplate, {
           id: this.id,
           title: this.options.message || "",
           description: this.options.description || "",
         });
         break;
       case "success":
-        this.toast.innerHTML = buildTemplate(successTemplate, {
+        this.toast.innerHTML = buildToast(successTemplate, {
           id: this.id,
           message: this.options.message || "",
         });
         break;
       case "info":
-        this.toast.innerHTML = buildTemplate(infoTemplate, {
+        this.toast.innerHTML = buildToast(infoTemplate, {
           id: this.id,
           message: this.options.message || "",
         });
         break;
       case "warning":
-        this.toast.innerHTML = buildTemplate(warningTemplate, {
+        this.toast.innerHTML = buildToast(warningTemplate, {
           id: this.id,
           message: this.options.message || "",
         });
         break;
       case "error":
-        this.toast.innerHTML = buildTemplate(errorTemplate, {
+        this.toast.innerHTML = buildToast(errorTemplate, {
           id: this.id,
           message: this.options.message || "",
         });
-        break;
-      case "action":
-        this.toast.innerHTML = buildTemplate(actionTemplate, {
-          id: this.id,
-          message: this.options.message || "",
-          "action_label": this.options.action?.label || "Action",
-        });
-        this.toast
-          .querySelector("[data-toast-action-button]")
-          ?.addEventListener("click", () => {
-            this.options.action?.onClick();
-            this.remove();
-          });
         break;
       case "custom":
         if (!this.options.template_id) {
@@ -130,23 +121,24 @@ export default class Toast {
           throw new Error("Template not found: " + this.options.template_id);
         }
         let toastData = this.options.toastData || {};
-        toastData['id'] = this.id;
-        this.toast.innerHTML = buildTemplate(
-          template.innerHTML,
-          toastData,
-        );
+        toastData["id"] = this.id;
+        this.toast.innerHTML = buildToast(template.innerHTML, toastData);
         break;
       case "promise":
         this.canRemove = false;
-        this.toast.innerHTML = buildTemplate(promiseTemplate, {
+        this.toast.innerHTML = buildToast(promiseTemplate, {
           id: this.id,
           message: this.options.message || "",
         });
-        const promiseOptions = this.options.promiseOptions
+        const promiseOptions = this.options.promiseOptions;
 
         function setCompleted() {
-          this.toast.querySelector('[data-toast-loader-running]')?.setAttribute("data-show", "false");
-          this.toast.querySelector('[data-toast-loader-completed]')?.setAttribute("data-show", "true");
+          this.toast
+            .querySelector("[data-toast-promise-running]")
+            ?.setAttribute("data-show", "false");
+          this.toast
+            .querySelector("[data-toast-promise-completed]")
+            ?.setAttribute("data-show", "true");
           this.canRemove = true;
           this.#setupRemoval();
           if (this.isExpanded) {
@@ -156,19 +148,31 @@ export default class Toast {
         }
 
         function setMessage(message: string) {
-          const messageElement = this.toast?.querySelector('[data-toast-promise-message]')!
-          messageElement.innerHTML = message
+          const messageElement = this.toast?.querySelector(
+            "[data-toast-promise-message]",
+          )!;
+          messageElement.innerHTML = message;
         }
 
-        promiseOptions?.promise.then(() => {
-          setMessage.bind(this)(promiseOptions?.successMessage || promiseOptions?.loadingMessage || "");
-          setCompleted.bind(this)()
-        }).catch(() => {
-          setMessage.bind(this)(promiseOptions?.errorMessage || promiseOptions?.loadingMessage || "");
-          setCompleted.bind(this)()
-        });
-
         setMessage.bind(this)(promiseOptions?.loadingMessage || "");
+        promiseOptions?.promise
+          .then(() => {
+            setMessage.bind(this)(
+              promiseOptions?.successMessage ||
+                promiseOptions?.loadingMessage ||
+                "",
+            );
+            setCompleted.bind(this)();
+          })
+          .catch(() => {
+            setMessage.bind(this)(
+              promiseOptions?.errorMessage ||
+                promiseOptions?.loadingMessage ||
+                "",
+            );
+            setCompleted.bind(this)();
+          });
+
         break;
     }
 
@@ -189,16 +193,35 @@ export default class Toast {
         "--close-button-display",
         "var(--close-button-visible-display)",
       );
+
+      this.toast
+        .querySelector(".sonner-toast-close")
+        ?.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.remove();
+          if (this.removalTimer) {
+            clearTimeout(this.removalTimer);
+          }
+        });
     }
 
-    this.toast
-      .querySelector("[data-toast-close]")
-      ?.addEventListener("click", () => {
-        this.remove();
-        if (this.removalTimer) {
-          clearTimeout(this.removalTimer);
+    const actionButton = this.toast.querySelector(
+      "[data-sonner-action-button]",
+    )!;
+    if (this.options.action) {
+      actionButton.setAttribute("data-sonner-action-button", "true");
+      actionButton.innerHTML = renderTemplate(actionButton.innerHTML, {
+        action_label: this.options.action?.label || "Action",
+      });
+      actionButton.addEventListener("click", () => {
+        let retVal = this.options.action?.onClick();
+        if (retVal == null || retVal == undefined || retVal !== false) {
+          this.remove();
         }
       });
+    } else {
+      actionButton.remove();
+    }
   }
 
   setCollapsedHeight(height: number) {
