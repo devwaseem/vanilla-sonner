@@ -41,11 +41,9 @@
   transform: translateX(var(--x)) translateY(var(--y)) scale(var(--scale));
   transition: transform, opacity;
   transition-duration: 0ms;
+  padding: var(--padding);
+  font-size: 0.85rem;
 
-  & > li {
-    position: relative;
-    padding: var(--padding);
-  }
 
   // Themes
 
@@ -54,21 +52,52 @@
     --normal-border: var(--gray4);
     --normal-text: var(--gray12);
 
+    --button-bg: var(--normal-bg);
+    --button-border: var(--gray4);
+    --button-text: var(--gray12);
+    --button-hover-bg: var(--normal-bg);
+    --button-hover-border: var(--gray4);
+    --button-hover-text: var(--gray12);
+
     --success-bg: hsl(143, 85%, 96%);
     --success-border: hsl(145, 92%, 91%);
     --success-text: hsl(140, 100%, 27%);
+    --success-button-bg: var(--success-bg);
+    --success-button-border: var(--success-bg);
+    --success-button-text: var(--success-text);
+    --success-button-hover-bg: var(--success-text);
+    --success-button-hover-border: var(--success-text);
+    --success-button-hover-text: var(--success-bg);
 
     --info-bg: hsl(208, 100%, 97%);
     --info-border: hsl(221, 91%, 91%);
     --info-text: hsl(210, 92%, 45%);
+    --info-button-bg: var(--info-bg);
+    --info-button-border: var(--info-bg);
+    --info-button-text: var(--info-text);
+    --info-button-hover-bg: var(--info-text);
+    --info-button-hover-border: var(--info-text);
+    --info-button-hover-text: var(--info-bg);
 
     --warning-bg: hsl(49, 100%, 97%);
     --warning-border: hsl(49, 91%, 91%);
     --warning-text: hsl(31, 92%, 45%);
+    --warning-button-bg: var(--warning-bg);
+    --warning-button-border: var(--warning-bg);
+    --warning-button-text: var(--warning-text);
+    --warning-button-hover-bg: var(--warning-text);
+    --warning-button-hover-border: var(--warning-text);
+    --warning-button-hover-text: var(--warning-bg);
 
     --error-bg: hsl(359, 100%, 97%);
     --error-border: hsl(359, 100%, 94%);
     --error-text: hsl(360, 100%, 45%);
+    --error-button-bg: var(--error-bg);
+    --error-button-border: var(--error-bg);
+    --error-button-text: var(--error-text);
+    --error-button-hover-bg: var(--error-text);
+    --error-button-hover-border: var(--error-text);
+    --error-button-hover-text: var(--error-bg);
   }
 
   &[data-theme="dark"] {
@@ -76,21 +105,53 @@
     --normal-border: hsl(0, 0%, 20%);
     --normal-text: var(--gray1);
 
+    --button-bg: var(--gray1);
+    --button-border: var(--gray1);
+    --button-text: black;
+    --button-hover-bg: var(--gray1);
+    --button-hover-border: var(--gray1);
+    --button-hover-text: black;
+
     --success-bg: hsl(150, 100%, 6%);
     --success-border: hsl(147, 100%, 12%);
     --success-text: hsl(150, 86%, 65%);
+    --success-button-bg: var(--success-bg);
+    --sucesss-button-border: var(--success-bg);
+    --success-button-text: var(--success-text);
+    --success-button-hover-bg: var(--success-text);
+    --success-button-hover-border: var(--success-text);
+    --success-button-hover-text: var(--success-bg);
 
     --info-bg: hsl(215, 100%, 6%);
     --info-border: hsl(223, 100%, 12%);
     --info-text: hsl(216, 87%, 65%);
+    --info-button-bg: var(--info-bg);
+    --info-button-border: var(--info-bg);
+    --info-button-text: var(--info-text);
+    --info-button-hover-bg: var(--info-text);
+    --info-button-hover-border: var(--info-text);
+    --info-button-hover-text: var(--info-bg);
 
     --warning-bg: hsl(64, 100%, 6%);
     --warning-border: hsl(60, 100%, 12%);
     --warning-text: hsl(46, 87%, 65%);
+    --warning-button-bg: hsl(64, 100%, 6%);
+    --warning-button-border: hsl(64, 100%, 6%);
+    --warning-button-text: var(--warning-text);
+    --warning-button-hover-bg: var(--warning-text);
+    --warning-button-hover-border: var(--warning-text);
+    --warning-button-hover-text: var(--warning-bg);
 
     --error-bg: hsl(358, 76%, 10%);
+    --error-button-bg: hsl(358, 76%, 18%);
     --error-border: hsl(357, 89%, 16%);
     --error-text: hsl(358, 100%, 81%);
+    --error-button-bg: hsl(358, 76%, 10%);
+    --error-button-border: hsl(358, 76%, 10%);
+    --error-button-text: var(--error-text);
+    --error-button-hover-bg: var(--error-text);
+    --error-button-hover-border: var(--error-text);
+    --error-button-hover-text: var(--error-bg);
   }
 
   &[data-rich-colors="true"] {
@@ -99,11 +160,12 @@
       border-color: var(--success-border);
       color: var(--success-text);
 
-      & > li > [data-toast-close] {
-        background-color: var(--success-bg);
-        border-color: var(--success-border);
-        color: var(--success-text);
-      }
+      --button-bg: var(--success-button-bg);
+      --button-border: var(--success-button-border);
+      --button-text: var(--success-button-text);
+      --button-hover-bg: var(--success-button-hover-bg);
+      --button-hover-border: var(--success-button-hover-border);
+      --button-hover-text: var(--success-button-hover-text);
     }
 
     &[data-type="info"] {
@@ -111,11 +173,12 @@
       border-color: var(--info-border);
       color: var(--info-text);
 
-      & > li > [data-toast-close] {
-        background-color: var(--info-bg);
-        border-color: var(--info-border);
-        color: var(--info-text);
-      }
+      --button-bg: var(--info-button-bg);
+      --button-border: var(--info-button-border);
+      --button-text: var(--info-button-text);
+      --button-hover-bg: var(--info-button-hover-bg);
+      --button-hover-border: var(--info-button-hover-border);
+      --button-hover-text: var(--info-button-hover-text);
     }
 
     &[data-type="warning"] {
@@ -123,11 +186,12 @@
       border-color: var(--warning-border);
       color: var(--warning-text);
 
-      & > li > [data-toast-close] {
-        background-color: var(--warning-bg);
-        border-color: var(--warning-border);
-        color: var(--warning-text);
-      }
+      --button-bg: var(--warning-button-bg); 
+      --button-border: var(--warning-button-border);
+      --button-text: var(--warning-button-text);
+      --button-hover-bg: var(--warning-button-hover-bg);
+      --button-hover-border: var(--warning-button-hover-border);
+      --button-hover-text: var(--warning-button-hover-text);
     }
 
     &[data-type="error"] {
@@ -135,11 +199,12 @@
       border-color: var(--error-border);
       color: var(--error-text);
 
-      & > li > [data-toast-close] {
-        background-color: var(--error-bg);
-        border-color: var(--error-border);
-        color: var(--error-text);
-      }
+      --button-bg: var(--error-button-bg); 
+      --button-border: var(--error-button-border);
+      --button-text: var(--error-button-text);
+      --button-hover-bg: var(--error-button-hover-bg);
+      --button-hover-border: var(--error-button-hover-border);
+      --button-hover-text: var(--error-button-hover-text);
     }
   }
 
@@ -223,13 +288,21 @@
   }
 }
 
-[data-toast-close] {
+.sonner-toast-content-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  justify-content: space-between;
+}
+
+
+.sonner-toast-close {
   width: 20px;
   height: 20px;
-  color: var(--normal-text);
-  background-color: var(--normal-bg);
-  border: 1px solid var(--normal-border);
-  border-color: var(--normal-border);
+  color: var(--button-text);
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);;
+  border-color: var(--button-border);
   border-radius: 50%;
   display: var(--close-button-display);
   align-items: center;
@@ -242,7 +315,9 @@
   z-index: calc(9999999999 - var(--index));
 
   &:hover {
-    background-color: var(--normal-border);
+    color: var(--button-hover-text);
+    border-color: var(--button-hover-border);
+    background-color: var(--button-hover-bg);
   }
 }
 
@@ -250,7 +325,6 @@
 
 [data-toast-plain] {
   font-weight: 500;
-  font-size: 0.9rem;
 }
 
 /* Description Template CSS */
@@ -262,12 +336,11 @@
 
   & > [data-title] {
     font-weight: 500;
-    font-size: 0.9rem;
   }
 
   & > [data-description] {
-    font-weight: regular;
-    font-size: 0.9rem;
+    font-weight: 400;
+    color: hsl(0, 0%, 24%);
   }
 
 }
@@ -278,13 +351,12 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: start;
+  align-items: center;
   justify-content: start;
 }
 
 [data-toast-level-message] {
   font-weight: 500;
-  font-size: 0.9rem;
   min-height: 20px;
   display: flex;
   align-items: center;
@@ -293,15 +365,15 @@
 
 /* Promise Template CSS */
 
-[data-toast-loader-running][data-show="false"] {
+[data-toast-promise-running][data-show="false"] {
   display: none;
 }
 
-[data-toast-loader-completed][data-show="false"] {
+[data-toast-promise-completed][data-show="false"] {
   display: none;
 }
 
-[data-toast-loader-running][data-show="true"] {
+[data-toast-promise-running][data-show="true"] {
   width: 24px;
   height: 24px;
   border: 3px solid var(--info-bg);
@@ -320,27 +392,26 @@
   }
 }
 
-[data-toast-loader-completed][data-show="true"] {
+[data-toast-promise-completed][data-show="true"] {
   display: block;
 }
 
-/* Action Template CSS */
-
-[data-toast-action] {
-  justify-content: space-between;
+[data-sonner-action-button="false"] {
+  display: none;
 }
 
-[data-toast-action-button] {
-  background-color: var(--info-bg);
-  color: var(--info-text);
+[data-sonner-action-button="true"] {
+  display: block;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border: 0;
   padding: 4px 8px;
-  border-radius: 12%;
-  border: 1px solid var(--info-border);
+  border-radius: 4px;
+  border: 1px solid var(--button-border);
   cursor: pointer;
 
   &:hover {
-    background-color: var(--info-border);
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
   }
-  
 }
