@@ -3,9 +3,11 @@ import { Toaster } from "./toaster";
 
 let _toaster: Toaster | undefined;
 
-document.addEventListener("DOMContentLoaded", () => {
-  _toaster = new Toaster();
-});
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", () => {
+    _toaster = new Toaster();
+  });
+}
 
 interface ToastConfig {
   action?: { label: string; onClick: () => void };
@@ -102,6 +104,7 @@ toast.custom = function (
     type: "custom",
     toastData: data,
     template_id,
+    action: config.action,
     duration: config.duration,
   });
 };
@@ -112,6 +115,8 @@ declare global {
   }
 }
 
-window.toast = toast;
+if (typeof window !== "undefined") {
+  window.toast = toast;
+}
 
 export { Toaster, toast };

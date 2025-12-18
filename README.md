@@ -29,12 +29,12 @@ via CDN:
 
     ...
 
-    <link href="https://cdn.jsdelivr.net/npm/vanilla-sonner@0.3.0/dist/vanilla-sonner.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.min.css" rel="stylesheet" />
 
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@0.3.0/dist/vanilla-sonner.umd.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.umd.min.js" type="module"></script>
 
     <!-- If you're using ES Modules -->
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@0.3.0/dist/vanilla-sonner.es.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.es.min.js" type="module"></script>
 
     
     ...
@@ -49,12 +49,12 @@ via Manually:
 
     ...
 
-    <link href="path/to/dist/sonner.min.css" rel="stylesheet" />
+    <link href="path/to/dist/vanilla-sonner.min.css" rel="stylesheet" />
 
-    <script src="path/to/dist/sonner.umd.min.js" type="module"></script>
+    <script src="path/to/dist/vanilla-sonner.umd.min.js" type="module"></script>
 
     <!-- If you're using ES Modules -->
-    <script src="path/to/dist/sonner.es.min.js" type="module"></script>
+    <script src="path/to/dist/vanilla-sonner.es.min.js" type="module"></script>
 
     
     ...
@@ -92,6 +92,7 @@ After setting up your container, import the toast function into your JavaScript 
 
 ```js
 import { toast } from 'vanilla-sonner'; // If using ES Modules
+import 'vanilla-sonner/style.css'; // Required styles
 
 // Basic toast
 toast('My first vanilla toast!');
@@ -111,18 +112,66 @@ toast.warning('Please save your changes before closing!');
 // Error toast
 toast.error('Something went wrong!');
 
-// Custom toast with specific options
-toast.custom({
-    type: 'plain',
-    message: 'Hello from custom toast!',
-    duration: 3000, // Overrides global duration for this toast
-    theme: 'dark', // Overrides global theme for this toast
-    closeButton: false, // Hides close button for this toast
-    xPosition: 'left', // 'left', 'right', or 'center'
-    yPosition: 'top', // 'top' or 'bottom'
-});
+// Custom toast (requires a <template id="..."> in your HTML)
+toast.custom('custom-toast-template', { wifiName: 'Pineapple' }, { duration: 3000 });
 
 ```
+
+## Custom Toasts (`toast.custom`)
+
+Custom toasts let you render arbitrary HTML using a `<template>` in your page. Under the hood, vanilla-sonner takes the template’s HTML and replaces `{{ key }}` placeholders using the `data` object you pass to `toast.custom`.
+
+### 1) Add a template to your HTML
+
+```html
+<template id="custom-toast-template">
+  <div style="display:flex;align-items:center;gap:.5rem">
+    <strong>Connected</strong> to <u>{{ wifiName }}</u>
+  </div>
+</template>
+```
+
+### 2) Call `toast.custom(templateId, data, options)`
+
+```js
+toast.custom(
+  "custom-toast-template",
+  { wifiName: "Pineapple" },
+  {
+    duration: 4000,
+    action: {
+      label: "Disconnect",
+      onClick: () => {
+        // return false to keep the toast open
+        // return true/undefined to auto-dismiss after click
+        return false;
+      },
+    },
+  },
+);
+```
+
+### Placeholder behavior (important)
+
+- Placeholders are simple `{{ key }}` tokens (no nested paths), where `key` is a word character name (letters/numbers/underscore).
+- Vanilla-sonner injects an `id` key automatically (the toast element id), so `{{ id }}` is always available.
+- Values are inserted as HTML (via `innerHTML`), so do not pass untrusted user input into `data` unless you sanitize it first.
+
+### All options for `toast.custom`
+
+`toast.custom(templateId, data, options?)`
+
+| Parameter | Type | Required | Description |
+|---|---|---:|---|
+| `templateId` | `string` | Yes | The `id` of a `<template>` element in the DOM. |
+| `data` | `Record<string, string>` | Yes | Keys used to replace placeholders in your template. |
+| `options.duration` | `number` | No | Overrides the container’s `duration` (ms). Use `0` to keep it open until dismissed. |
+| `options.action.label` | `string` | No | Label for the built-in action button. |
+| `options.action.onClick` | `() => void \| false` | No | Action handler. If it returns `false`, the toast stays open; otherwise it dismisses. |
+
+Notes:
+- Close button is controlled by the container attribute `close-button="true"` (or by the container default).
+- Theme/position/rich-colors are controlled by the toaster container attributes and apply to custom toasts too.
 
 ## Toaster Container Attributes
 
@@ -135,7 +184,7 @@ Configure the global behavior of your toasts by adding the following attributes 
 | duration     | The default duration (in milliseconds) for which a toast remains visible. Set to 0 for indefinite duration. | 0 (indefinite) | Any integer (milliseconds)                                                              |
 | close-button | If true, a close button will be displayed on each toast.                                                    | false          | true, false                                                                             |
 | rich-colors  | If true, toasts will use type-specific background and border colors (success, info, warning, error).        | false          | true, false                                                                             |
-| theme        | Sets the default theme for toasts .                                                                         | light          | light, dark                                                                             |
+| theme        | Sets the default theme for toasts .                                                                         | light          | system, light, dark                                                                             |
 | expanded     | If true, toasts will appear in an expanded state by default.                                                | false          | true, false                                                                             |
 
 ## ToastOptions Interface
