@@ -3,9 +3,13 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/sonner.ts",
+      entry: "src/index.ts",
       name: "Sonner",
-      fileName: (format) => `vanilla-sonner.${format}.min.js`,
+      fileName: (format) =>
+        format === "es"
+          ? "vanilla-sonner.es.min.mjs"
+          : "vanilla-sonner.umd.min.js",
+      cssFileName: "vanilla-sonner.min",
       formats: ["es", "umd"],
     },
     minify: true,

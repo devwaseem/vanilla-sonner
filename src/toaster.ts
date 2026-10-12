@@ -1,5 +1,5 @@
 import Toast from "./toast.js";
-import { ToastOptions } from "./models";
+import type { ToastOptions } from "./models";
 
 export class Toaster {
   toasts: Toast[];
@@ -8,119 +8,152 @@ export class Toaster {
   expandedByDefault: boolean;
   enableCloseButton: boolean;
   isToastsExpanded: boolean;
+  resizeObserver: ResizeObserver;
 
   constructor() {
     this.toasts = [];
     const _container = document.getElementById("sonner-toast-container");
     if (!_container) {
-      throw new Error("No container found");
+      throw new Error(
+        'Vanilla Sonner requires an element with id "sonner-toast-container".',
+      );
     }
     this.container = _container;
 
-    this.maxToasts = parseInt(this.container.getAttribute("max-toasts") || "3");
+    this.resizeObserver = new ResizeObserver((entries) => {
+      let needsRefresh = false;
+      for (const entry of entries) {
+        const toast = this.toasts.find(
+          (candidate) => candidate.contentElement === entry.target,
+        );
+        if (!toast) {
+          continue;
+        }
+        const previousHeight = toast.height;
+        toast.updateHeight();
+        needsRefresh ||= Math.abs(previousHeight - toast.height) > 0.5;
+      }
+      if (needsRefresh) {
+        this.refresh();
+      }
+    });
+
+    const configuredMax = Number.parseInt(
+      this.container.getAttribute("max-toasts") || "3",
+      10,
+    );
+    this.maxToasts =
+      Number.isFinite(configuredMax) && configuredMax > 0 ? configuredMax : 3;
 
     this.isToastsExpanded =
       (this.container.getAttribute("expanded") || "false") === "true";
     this.expandedByDefault = this.isToastsExpanded;
-    if (!this.expandedByDefault) {
-      this.container.addEventListener(
-        "mouseenter",
-        this.#onMouseEnter.bind(this),
-      );
-      this.container.addEventListener(
-        "mouseleave",
-        this.#onMouseOver.bind(this),
-      );
-      this.container.addEventListener("mouseout", this.#onMouseOver.bind(this));
-      this.container.addEventListener(
-        "mousemove",
-        this.#onMouseOver.bind(this),
-      );
-    }
+    this.container.addEventListener(
+      "mouseenter",
+      this.#onMouseEnter.bind(this),
+    );
+    this.container.addEventListener("mouseleave", this.#onMouseOver.bind(this));
+    this.container.addEventListener("mouseout", this.#onMouseOver.bind(this));
+    this.container.addEventListener("mousemove", this.#onMouseOver.bind(this));
+    this.container.addEventListener("focusin", this.#onFocusIn.bind(this));
+    this.container.addEventListener("focusout", this.#onFocusOut.bind(this));
 
-    let enableCloseButton =
+    const enableCloseButton =
       this.container.getAttribute("close-button") || "false";
-    this.enableCloseButton = enableCloseButton == "true";
+    this.enableCloseButton = enableCloseButton === "true";
 
-    let theme = this.container.getAttribute("theme");
-    if (theme == "system") {
+    const theme = this.container.getAttribute("theme");
+    if (theme === "system") {
       const prefersDarkScheme = window.matchMedia(
         "(prefers-color-scheme: dark)",
       );
-      prefersDarkScheme.addEventListener("change", (event) => {
+      prefersDarkScheme.addEventListener("change", () => {
         this.refresh();
       });
     }
   }
 
   get isDarkTheme() {
-    let theme = this.container.getAttribute("theme");
-    if (theme == "system") {
+    const theme = this.container.getAttribute("theme");
+    if (theme === "system") {
       const prefersDarkScheme = window.matchMedia(
         "(prefers-color-scheme: dark)",
       );
       return prefersDarkScheme.matches;
     }
-    return this.container.getAttribute("theme") == "dark";
+    return this.container.getAttribute("theme") === "dark";
   }
 
   get positions() {
     const position = this.container.getAttribute("position") || "bottom-right";
-    const [yPosition, xPosition] = position.split("-");
-    return {
-      xPosition,
-      yPosition,
-    };
+    const [rawYPosition, rawXPosition] = position.split("-");
+    const yPosition: "top" | "bottom" =
+      rawYPosition === "top" ? "top" : "bottom";
+    const xPosition: "left" | "right" | "center" =
+      rawXPosition === "left" || rawXPosition === "center"
+        ? rawXPosition
+        : "right";
+    return { xPosition, yPosition };
   }
 
   create(options: ToastOptions) {
-    const container = this.container;
-
-    const containerDuration = container.getAttribute("duration");
-    if (!options.duration && containerDuration) {
-      options.duration = parseInt(containerDuration);
-    }
-
-    if (options.closeButton == undefined || options.closeButton == null) {
-      options.closeButton = this.enableCloseButton;
-    }
-
-    if (options.theme == undefined || options.theme == null) {
-      let containerTheme = this.container.getAttribute("theme");
-      if (containerTheme == "light" || containerTheme == "dark") {
-        options.theme = containerTheme;
+    const resolvedOptions = { ...options };
+    const containerDuration = this.container.getAttribute("duration");
+    if (resolvedOptions.duration == null && containerDuration !== null) {
+      const duration = Number.parseInt(containerDuration, 10);
+      if (Number.isFinite(duration) && duration >= 0) {
+        resolvedOptions.duration = duration;
       }
     }
 
-    if (options.useRichColors == undefined || options.useRichColors == null) {
-      let containerRichColors = this.container.getAttribute("rich-colors");
-      if (containerRichColors == "true") {
-        options.useRichColors = true;
+    if (resolvedOptions.closeButton == null) {
+      resolvedOptions.closeButton = this.enableCloseButton;
+    }
+
+    if (resolvedOptions.theme == null) {
+      const containerTheme = this.container.getAttribute("theme");
+      if (containerTheme === "light" || containerTheme === "dark") {
+        resolvedOptions.theme = containerTheme;
       }
     }
 
-    const toast = new Toast({
-      ...options,
-    });
+    if (resolvedOptions.useRichColors == null) {
+      resolvedOptions.useRichColors =
+        this.container.getAttribute("rich-colors") === "true";
+    }
 
-    container.appendChild(toast.element);
-
+    const toast = new Toast(resolvedOptions);
+    this.container.appendChild(toast.element);
     toast.updateHeight();
     this.toasts.push(toast);
+
+    const contentElement = toast.contentElement;
+    if (contentElement) {
+      this.resizeObserver.observe(contentElement);
+    }
 
     this.refresh();
     toast.setMounted();
 
-    toast.onUpdate = (id) => {
+    toast.onUpdate = () => {
+      toast.updateHeight();
       this.refresh();
     };
 
+    const onClose = toast.onClose;
     toast.onClose = (id) => {
-      this.toasts = this.toasts.filter((toast) => toast.id != id);
+      this.toasts = this.toasts.filter((candidate) => candidate.id !== id);
       this.refresh();
+      onClose?.(id);
     };
 
-    toast.onRemove = (id) => {};
+    const onRemove = toast.onRemove;
+    toast.onRemove = (id) => {
+      if (contentElement) {
+        this.resizeObserver.unobserve(contentElement);
+      }
+      onRemove?.(id);
+    };
 
     if (this.expandedByDefault) {
       toast.setExpanded();
@@ -149,7 +182,7 @@ export class Toaster {
     const { xPosition, yPosition } = this.positions;
     const isDarkTheme = this.isDarkTheme;
     this.toasts.forEach((toast, index) => {
-      let reverseIndex = this.toasts.length - index;
+      const reverseIndex = this.toasts.length - index;
       toast.setFront(false);
       toast.setIndex(reverseIndex);
       toast.setXPosition(xPosition);
@@ -162,13 +195,16 @@ export class Toaster {
       }
     });
 
-    let frontToast = this.toasts[this.toasts.length - 1];
+    const frontToast = this.toasts.at(-1);
+    if (!frontToast) {
+      return;
+    }
 
     let height = 0;
     let lastElementHeight = 0;
     for (let i = this.toasts.length - 1; i >= 0; i--) {
       const existingToast = this.toasts[i];
-      if (existingToast.hidden) {
+      if (!existingToast || existingToast.hidden) {
         continue;
       }
       height += lastElementHeight;
@@ -180,8 +216,13 @@ export class Toaster {
     frontToast.setFront(true);
   }
 
-  #onMouseEnter(_event: MouseEvent) {
-    this.expand();
+  #onMouseEnter() {
+    if (!this.expandedByDefault) {
+      this.expand();
+    }
+    for (const toast of this.toasts) {
+      toast.pauseRemoval("pointer");
+    }
   }
 
   #onMouseOver(event: MouseEvent) {
@@ -189,14 +230,17 @@ export class Toaster {
       return;
     }
 
-    const rects: DOMRect[] = [
-      ...Array.from(this.toasts).map((t) => t.element.getBoundingClientRect()),
-    ];
-
-    const left = Math.min(...rects.map((r) => r.left));
-    const top = Math.min(...rects.map((r) => r.top));
-    const right = Math.max(...rects.map((r) => r.right));
-    const bottom = Math.max(...rects.map((r) => r.bottom));
+    let left = Number.POSITIVE_INFINITY;
+    let top = Number.POSITIVE_INFINITY;
+    let right = Number.NEGATIVE_INFINITY;
+    let bottom = Number.NEGATIVE_INFINITY;
+    for (const toast of this.toasts) {
+      const rect = toast.element.getBoundingClientRect();
+      left = Math.min(left, rect.left);
+      top = Math.min(top, rect.top);
+      right = Math.max(right, rect.right);
+      bottom = Math.max(bottom, rect.bottom);
+    }
 
     const isMouseInside =
       event.clientX >= left &&
@@ -205,7 +249,36 @@ export class Toaster {
       event.clientY <= bottom;
 
     if (!isMouseInside) {
+      if (!this.expandedByDefault) {
+        this.collapse();
+      }
+      for (const toast of this.toasts) {
+        toast.resumeRemoval("pointer");
+      }
+    }
+  }
+
+  #onFocusIn() {
+    if (!this.expandedByDefault) {
+      this.expand();
+    }
+    for (const toast of this.toasts) {
+      toast.pauseRemoval("focus");
+    }
+  }
+
+  #onFocusOut(event: FocusEvent) {
+    if (
+      event.relatedTarget instanceof Node &&
+      this.container.contains(event.relatedTarget)
+    ) {
+      return;
+    }
+    if (!this.expandedByDefault) {
       this.collapse();
+    }
+    for (const toast of this.toasts) {
+      toast.resumeRemoval("focus");
     }
   }
 }

@@ -4,6 +4,8 @@ A lightweight port of [Sonner](https://github.com/emilkowalski/sonner) for vanil
 
 vanilla-sonner brings elegant and customizable toast notifications to your web applications without any framework dependencies.
 
+See the [changelog](CHANGELOG.md) for release notes. Upgrading from 0.5.x? Read the [0.6.0 migration guide](MIGRATION.md#060).
+
 ## ✨ Features
 
 Framework Agnostic: Works with any vanilla JavaScript project.
@@ -31,10 +33,10 @@ via CDN:
 
     <link href="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.min.css" rel="stylesheet" />
 
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.umd.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.umd.min.js"></script>
 
     <!-- If you're using ES Modules -->
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.es.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.es.min.mjs" type="module"></script>
 
     
     ...
@@ -51,10 +53,10 @@ via Manually:
 
     <link href="path/to/dist/vanilla-sonner.min.css" rel="stylesheet" />
 
-    <script src="path/to/dist/vanilla-sonner.umd.min.js" type="module"></script>
+    <script src="path/to/dist/vanilla-sonner.umd.min.js"></script>
 
     <!-- If you're using ES Modules -->
-    <script src="path/to/dist/vanilla-sonner.es.min.js" type="module"></script>
+    <script src="path/to/dist/vanilla-sonner.es.min.mjs" type="module"></script>
 
     
     ...

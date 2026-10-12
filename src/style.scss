@@ -42,9 +42,19 @@
   transition: transform, opacity;
   transition-duration: 0ms;
   padding: var(--padding);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   font-size: 0.85rem;
-
 
   // Themes
   &[data-theme="light"] {
@@ -194,7 +204,7 @@
       border-color: var(--warning-border);
       color: var(--warning-text);
 
-      --action-button-bg: var(--warning-action-button-bg); 
+      --action-button-bg: var(--warning-action-button-bg);
       --action-button-border: var(--warning-action-button-border);
       --action-button-text: var(--warning-action-button-text);
       --action-button-hover-bg: var(--warning-action-button-hover-bg);
@@ -207,7 +217,7 @@
       border-color: var(--error-border);
       color: var(--error-text);
 
-      --action-button-bg: var(--error-action-button-bg); 
+      --action-button-bg: var(--error-action-button-bg);
       --action-button-border: var(--error-action-button-border);
       --action-button-text: var(--error-action-button-text);
       --action-button-hover-bg: var(--error-action-button-hover-bg);
@@ -303,13 +313,12 @@
   justify-content: space-between;
 }
 
-
 .sonner-toast-close {
   width: 20px;
   height: 20px;
   color: var(--close-button-text);
   background-color: var(--close-button-bg);
-  border: 1px solid var(--close-button-border);;
+  border: 1px solid var(--close-button-border);
   border-radius: 50%;
   display: var(--close-button-display);
   align-items: center;
@@ -348,7 +357,6 @@
   & > [data-description] {
     font-weight: 400;
   }
-
 }
 
 /* Level based CSS */
@@ -390,10 +398,10 @@
   animation: rotation 1s linear infinite;
   @keyframes rotation {
     0% {
-        transform: rotate(0deg);
+      transform: rotate(0deg);
     }
     100% {
-        transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
 }
@@ -419,5 +427,16 @@
   &:hover {
     background-color: var(--action-button-hover-bg);
     color: var(--action-button-hover-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toast],
+  [data-sonner-toast] * {
+    transition-duration: 0ms !important;
+  }
+
+  [data-toast-promise-running] {
+    animation: none !important;
   }
 }

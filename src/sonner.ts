@@ -1,25 +1,26 @@
-import "./style.scss";
 import { Toaster } from "./toaster";
+import type { ToastConfig } from "./models";
 
-let _toaster: Toaster | undefined;
+let toaster: Toaster | undefined;
 
-if (typeof document !== "undefined") {
-  document.addEventListener("DOMContentLoaded", () => {
-    _toaster = new Toaster();
-  });
+function getToaster() {
+  toaster ??= new Toaster();
+  return toaster;
 }
 
-interface ToastConfig {
-  action?: { label: string; onClick: () => void };
-  duration?: number;
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", getToaster, { once: true });
+  } else {
+    getToaster();
+  }
 }
 
 function toast(message: string, config: ToastConfig = {}) {
-  _toaster?.create({
+  getToaster().create({
     message: message,
     type: "plain",
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 }
 
@@ -28,53 +29,48 @@ toast.message = function (
   description: string,
   config: ToastConfig = {},
 ) {
-  _toaster?.create({
+  getToaster().create({
     type: "description",
     message: title,
     description,
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 };
 
 toast.info = function (message: string, config: ToastConfig = {}) {
-  _toaster?.create({
+  getToaster().create({
     type: "info",
     message,
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 };
 
 toast.success = function (message: string, config: ToastConfig = {}) {
-  _toaster?.create({
+  getToaster().create({
     type: "success",
     message,
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 };
 
 toast.warning = function (message: string, config: ToastConfig = {}) {
-  _toaster?.create({
+  getToaster().create({
     type: "warning",
     message,
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 };
 
 toast.error = function (message: string, config: ToastConfig = {}) {
-  _toaster?.create({
+  getToaster().create({
     type: "error",
     message,
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 };
 
 toast.promise = function (
-  promise: Promise<any>,
+  promise: Promise<unknown>,
   message: {
     loading: string;
     success: string;
@@ -82,7 +78,7 @@ toast.promise = function (
   },
   config: ToastConfig = {},
 ) {
-  _toaster?.create({
+  getToaster().create({
     type: "promise",
     promiseOptions: {
       promise,
@@ -90,8 +86,7 @@ toast.promise = function (
       successMessage: message.success,
       errorMessage: message.error,
     },
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 };
 
@@ -100,18 +95,17 @@ toast.custom = function (
   data: Record<string, string>,
   config: ToastConfig = {},
 ) {
-  _toaster?.create({
+  getToaster().create({
     type: "custom",
     toastData: data,
     template_id,
-    action: config.action,
-    duration: config.duration,
+    ...config,
   });
 };
 
 declare global {
   interface Window {
-    toast: (message: string) => void;
+    toast: typeof toast;
   }
 }
 
@@ -120,3 +114,4 @@ if (typeof window !== "undefined") {
 }
 
 export { Toaster, toast };
+export type { ToastAction, ToastConfig, ToastOptions } from "./models";

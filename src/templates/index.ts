@@ -15,21 +15,25 @@ import errorTemplate from "./error.html?raw";
 //@ts-ignore
 import promiseTemplate from "./promise.html?raw";
 
-
-function renderTemplate(template: string, replacements: Record<string, string>) {
-    const content = template.replace(/{{ ?(\w+) ?}}/g, (_, key) => key in replacements ? replacements[key] : "")
-    return content.trim()
+function renderTemplate(
+  template: string,
+  replacements: Record<string, string>,
+) {
+  const content = template.replace(
+    /{{ ?(\w+) ?}}/g,
+    (_, key: string) => replacements[key] ?? "",
+  );
+  return content.trim();
 }
 
-
 export {
-    renderTemplate,
-    baseTemplate,
-    plainTemplate,
-    descriptionTemplate,
-    successTemplate,
-    infoTemplate,
-    warningTemplate,
-    errorTemplate,
-    promiseTemplate,
+  renderTemplate,
+  baseTemplate,
+  plainTemplate,
+  descriptionTemplate,
+  successTemplate,
+  infoTemplate,
+  warningTemplate,
+  errorTemplate,
+  promiseTemplate,
 };

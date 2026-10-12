@@ -1,4 +1,4 @@
-import { ToastOptions } from "./models";
+import type { ToastOptions } from "./models";
 import {
   baseTemplate,
   plainTemplate,
@@ -11,24 +11,29 @@ import {
   promiseTemplate,
 } from "./templates";
 
-function buildToast(template: string, replacements: Record<string, string>) {
-  const content = renderTemplate(template, replacements);
-  return baseTemplate.replace(/{{ ?slot ?}}/g, content.trim());
+function buildToast(template: string) {
+  return baseTemplate.replace(/{{ ?slot ?}}/g, template.trim());
 }
+
+const LEVEL_TEMPLATES = {
+  success: successTemplate,
+  info: infoTemplate,
+  warning: warningTemplate,
+  error: errorTemplate,
+};
 
 export default class Toast {
   id: string;
   toast: HTMLElement;
   options: ToastOptions;
-  xPosition: string;
-  yPosition: string;
-  isExpanded: boolean;
+  xPosition: "left" | "right" | "center" = "right";
+  yPosition: "top" | "bottom" = "bottom";
 
-  timeStarted: number;
-  removalTimer: NodeJS.Timeout | null;
-  lastRemovalPaused: number;
+  removalTimer: number | null;
+  removalDeadline: number | null;
   duration: number;
   remainingTimeToRemove: number;
+  pauseReasons: Set<string>;
   height: number;
   onUpdate: ((id: string) => void) | null;
   onRemove: ((id: string) => void) | null;
@@ -39,28 +44,34 @@ export default class Toast {
   index: number;
 
   canRemove: boolean;
+  closing: boolean;
 
   constructor(options: ToastOptions) {
     this.id = `toast-${Math.random().toString(26).substring(4)}-${Date.now()}`;
     this.options = options;
     this.toast = document.createElement("li");
     this.toast.setAttribute("id", this.id);
+    this.toast.setAttribute("role", "status");
+    this.toast.setAttribute("aria-live", "polite");
+    this.toast.setAttribute("aria-atomic", "true");
     this.setXPosition(options.xPosition || "right");
     this.setYPosition(options.yPosition || "bottom");
 
-    this.isExpanded = false;
+    this.isFront = false;
+    this.index = 0;
     this.hidden = false;
-    this.timeStarted = Date.now();
     this.removalTimer = null;
-    this.lastRemovalPaused = Date.now();
-    this.duration = options.duration || 0;
+    this.removalDeadline = null;
+    this.duration = options.duration ?? 0;
     this.remainingTimeToRemove = this.duration;
+    this.pauseReasons = new Set();
     this.height = 0;
 
     this.onUpdate = null;
-    this.onClose = null;
-    this.onRemove = null;
+    this.onClose = options.onClose ?? null;
+    this.onRemove = options.onRemove ?? null;
     this.canRemove = true;
+    this.closing = false;
 
     this.#setup();
   }
@@ -69,50 +80,53 @@ export default class Toast {
     return this.toast;
   }
 
+  get contentElement() {
+    return this.toast.querySelector<HTMLElement>(
+      ".sonner-toast-content-container",
+    );
+  }
+
   updateHeight() {
-    this.height = this.toast.getBoundingClientRect().height;
+    const content = this.contentElement;
+    if (!content) {
+      return;
+    }
+    const style = window.getComputedStyle(this.toast);
+    const chrome =
+      Number.parseFloat(style.paddingTop) +
+      Number.parseFloat(style.paddingBottom) +
+      Number.parseFloat(style.borderTopWidth) +
+      Number.parseFloat(style.borderBottomWidth);
+    this.height = content.getBoundingClientRect().height + chrome;
+  }
+
+  #setText(selector: string, value = "") {
+    const element = this.toast.querySelector<HTMLElement>(selector);
+    if (element) {
+      element.textContent = value;
+    }
   }
 
   #setup() {
     switch (this.options.type) {
       case "plain":
-        this.toast.innerHTML = buildToast(plainTemplate, {
-          id: this.id,
-          message: this.options.message || "",
-        });
+        this.toast.innerHTML = buildToast(plainTemplate);
+        this.#setText("[data-toast-plain]", this.options.message);
         break;
       case "description":
-        this.toast.innerHTML = buildToast(descriptionTemplate, {
-          id: this.id,
-          title: this.options.message || "",
-          description: this.options.description || "",
-        });
+        this.toast.innerHTML = buildToast(descriptionTemplate);
+        this.#setText("[data-title]", this.options.message);
+        this.#setText("[data-description]", this.options.description);
         break;
       case "success":
-        this.toast.innerHTML = buildToast(successTemplate, {
-          id: this.id,
-          message: this.options.message || "",
-        });
-        break;
       case "info":
-        this.toast.innerHTML = buildToast(infoTemplate, {
-          id: this.id,
-          message: this.options.message || "",
-        });
-        break;
       case "warning":
-        this.toast.innerHTML = buildToast(warningTemplate, {
-          id: this.id,
-          message: this.options.message || "",
-        });
+      case "error": {
+        this.toast.innerHTML = buildToast(LEVEL_TEMPLATES[this.options.type]);
+        this.#setText("[data-toast-level-message]", this.options.message);
         break;
-      case "error":
-        this.toast.innerHTML = buildToast(errorTemplate, {
-          id: this.id,
-          message: this.options.message || "",
-        });
-        break;
-      case "custom":
+      }
+      case "custom": {
         if (!this.options.template_id) {
           throw new Error("Custom toasts require a template_id");
         }
@@ -120,19 +134,21 @@ export default class Toast {
         if (!template) {
           throw new Error("Template not found: " + this.options.template_id);
         }
-        let toastData = this.options.toastData || {};
-        toastData["id"] = this.id;
-        this.toast.innerHTML = buildToast(template.innerHTML, toastData);
-        break;
-      case "promise":
-        this.canRemove = false;
-        this.toast.innerHTML = buildToast(promiseTemplate, {
+        const toastData = {
+          ...this.options.toastData,
           id: this.id,
-          message: this.options.message || "",
-        });
+        };
+        this.toast.innerHTML = buildToast(
+          renderTemplate(template.innerHTML, toastData),
+        );
+        break;
+      }
+      case "promise": {
+        this.canRemove = false;
+        this.toast.innerHTML = buildToast(promiseTemplate);
         const promiseOptions = this.options.promiseOptions;
 
-        function setCompleted() {
+        const setCompleted = () => {
           this.toast
             .querySelector("[data-toast-promise-running]")
             ?.setAttribute("data-show", "false");
@@ -141,39 +157,33 @@ export default class Toast {
             ?.setAttribute("data-show", "true");
           this.canRemove = true;
           this.#setupRemoval();
-          if (this.isExpanded) {
-            this.pauseRemoval();
-          }
           this.onUpdate?.(this.id);
-        }
+        };
 
-        function setMessage(message: string) {
-          const messageElement = this.toast?.querySelector(
-            "[data-toast-promise-message]",
-          )!;
-          messageElement.innerHTML = message;
-        }
+        const setMessage = (message: string) => {
+          this.#setText("[data-toast-promise-message]", message);
+        };
 
-        setMessage.bind(this)(promiseOptions?.loadingMessage || "");
+        setMessage(promiseOptions?.loadingMessage || "");
         promiseOptions?.promise
           .then(() => {
-            setMessage.bind(this)(
+            setMessage(
               promiseOptions?.successMessage ||
                 promiseOptions?.loadingMessage ||
                 "",
             );
-            setCompleted.bind(this)();
+            setCompleted();
           })
           .catch(() => {
-            setMessage.bind(this)(
+            setMessage(
               promiseOptions?.errorMessage ||
                 promiseOptions?.loadingMessage ||
                 "",
             );
-            setCompleted.bind(this)();
+            setCompleted();
           });
-
         break;
+      }
     }
 
     this.toast.dataset.sonnerToast = "";
@@ -196,12 +206,9 @@ export default class Toast {
 
       this.toast
         .querySelector(".sonner-toast-close")
-        ?.addEventListener("click", (e) => {
-          e.stopPropagation();
+        ?.addEventListener("click", (event) => {
+          event.stopPropagation();
           this.remove();
-          if (this.removalTimer) {
-            clearTimeout(this.removalTimer);
-          }
         });
     }
 
@@ -210,12 +217,10 @@ export default class Toast {
     )!;
     if (this.options.action) {
       actionButton.setAttribute("data-sonner-action-button", "true");
-      actionButton.innerHTML = renderTemplate(actionButton.innerHTML, {
-        action_label: this.options.action?.label || "Action",
-      });
+      actionButton.textContent = this.options.action.label || "Action";
       actionButton.addEventListener("click", () => {
-        let retVal = this.options.action?.onClick();
-        if (retVal == null || retVal == undefined || retVal !== false) {
+        const returnValue = this.options.action?.onClick();
+        if (returnValue !== false) {
           this.remove();
         }
       });
@@ -233,12 +238,12 @@ export default class Toast {
     this.toast.dataset.front = value.toString();
   }
 
-  setXPosition(xPosition: string) {
+  setXPosition(xPosition: "left" | "right" | "center") {
     this.xPosition = xPosition;
     this.toast.dataset.xPosition = xPosition;
   }
 
-  setYPosition(yPosition: string) {
+  setYPosition(yPosition: "top" | "bottom") {
     this.yPosition = yPosition;
     this.toast.dataset.yPosition = yPosition;
   }
@@ -250,16 +255,20 @@ export default class Toast {
 
   show() {
     this.toast.dataset.hidden = "false";
+    this.toast.removeAttribute("aria-hidden");
+    this.toast.inert = false;
     this.hidden = false;
   }
 
   hide() {
     this.toast.dataset.hidden = "true";
+    this.toast.setAttribute("aria-hidden", "true");
+    this.toast.inert = true;
     this.hidden = true;
   }
 
   setMounted() {
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.toast.dataset.mounted = "true";
     }, 10);
     if (this.canRemove) {
@@ -272,19 +281,11 @@ export default class Toast {
   }
 
   setExpanded() {
-    this.isExpanded = true;
     this.toast.dataset.expanded = "true";
-    if (this.duration > 0 && this.canRemove) {
-      this.pauseRemoval();
-    }
   }
 
   setCollapsed() {
-    this.isExpanded = false;
     this.toast.dataset.expanded = "false";
-    if (this.duration > 0 && this.canRemove && !this.removalTimer) {
-      this.resumeRemoval();
-    }
   }
 
   setTheme(theme: "light" | "dark") {
@@ -292,53 +293,83 @@ export default class Toast {
   }
 
   #setupRemoval() {
-    if (this.duration > 0) {
-      if (this.removalTimer) {
-        clearTimeout(this.removalTimer);
-      }
-      this.removalTimer = setTimeout(() => {
-        this.remove();
-        this.removalTimer = null;
-      }, this.duration);
+    if (this.duration <= 0) {
+      return;
     }
+    this.remainingTimeToRemove = this.duration;
+    this.#scheduleRemoval();
   }
 
-  pauseRemoval() {
-    if (this.removalTimer) {
-      clearTimeout(this.removalTimer);
+  #scheduleRemoval() {
+    if (
+      !this.canRemove ||
+      this.closing ||
+      this.pauseReasons.size > 0 ||
+      this.duration <= 0
+    ) {
+      return;
     }
-    this.removalTimer = null;
-    this.remainingTimeToRemove = Math.max(
-      0,
-      this.remainingTimeToRemove - (Date.now() - this.timeStarted),
-    );
-  }
-
-  resumeRemoval() {
-    this.removalTimer = setTimeout(() => {
-      this.remove();
+    if (this.removalTimer !== null) {
+      window.clearTimeout(this.removalTimer);
+    }
+    this.removalDeadline = performance.now() + this.remainingTimeToRemove;
+    this.removalTimer = window.setTimeout(() => {
       this.removalTimer = null;
-    }, this.remainingTimeToRemove! + 1000);
-    this.timeStarted = Date.now();
+      this.removalDeadline = null;
+      this.remove();
+    }, this.remainingTimeToRemove);
+  }
+
+  pauseRemoval(reason = "manual") {
+    if (this.pauseReasons.has(reason)) {
+      return;
+    }
+    this.pauseReasons.add(reason);
+    if (this.removalTimer !== null && this.removalDeadline !== null) {
+      window.clearTimeout(this.removalTimer);
+      this.removalTimer = null;
+      this.remainingTimeToRemove = Math.max(
+        0,
+        this.removalDeadline - performance.now(),
+      );
+      this.removalDeadline = null;
+    }
+  }
+
+  resumeRemoval(reason = "manual") {
+    this.pauseReasons.delete(reason);
+    if (this.pauseReasons.size === 0 && this.removalTimer === null) {
+      this.#scheduleRemoval();
+    }
   }
 
   remove() {
-    this.hide();
-    this.onClose?.(this.toast.id);
-
-    if (this.removalTimer) {
-      clearTimeout(this.removalTimer);
+    if (this.closing) {
+      return;
     }
+    this.closing = true;
+    this.hide();
 
-    setTimeout(() => {
-      this.element.remove();
-      if (this.onRemove) {
-        this.onRemove(this.toast.id);
-        // remove circular dependency to allow garbage collection
-        this.onClose = null;
-        this.onUpdate = null;
-        this.onRemove = null;
+    try {
+      this.onClose?.(this.toast.id);
+    } finally {
+      if (this.removalTimer !== null) {
+        window.clearTimeout(this.removalTimer);
+        this.removalTimer = null;
+        this.removalDeadline = null;
       }
-    }, 500);
+
+      window.setTimeout(() => {
+        this.element.remove();
+        try {
+          this.onRemove?.(this.toast.id);
+        } finally {
+          // Remove circular dependencies to allow garbage collection.
+          this.onClose = null;
+          this.onUpdate = null;
+          this.onRemove = null;
+        }
+      }, 500);
+    }
   }
 }

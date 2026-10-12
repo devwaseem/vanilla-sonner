@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vanilla Sonner E2E</title>
+  </head>
+  <body>
+    <button id="outside-focus-target" type="button">
+      Outside focus target
+    </button>
+    <ol
+      id="sonner-toast-container"
+      position="bottom-right"
+      max-toasts="3"
+      duration="0"
+      close-button="true"
+      theme="light"
+    ></ol>
+    <template id="custom-toast-template">
+      <div data-custom-content>{{ content }}</div>
+    </template>
+  </body>
+</html>
