@@ -1,4 +1,23 @@
 import "./style.scss";
 
-export { Toaster, toast } from "./sonner";
-export type { ToastAction, ToastConfig, ToastOptions } from "./models";
+export { createToaster, Toaster, toast } from "./sonner";
+export type {
+  StandardToastType,
+  ToastAction,
+  ToastAPI,
+  ToastCloseReason,
+  ToastConfig,
+  ToastDedupe,
+  ToastOptions,
+  ToastOverflow,
+  ToastPosition,
+  ToastPromiseMessages,
+  ToastPromiseResult,
+  ToastSnapshot,
+  ToastState,
+  ToastSwipeDirection,
+  ToastTheme,
+  ToastType,
+  ToastUpdate,
+  ToasterConfig,
+} from "./models";

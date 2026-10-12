@@ -20,6 +20,8 @@
   --y: 0%;
   --x: 0%;
   --scale: 1;
+  --swipe-x: 0px;
+  --swipe-y: 0px;
   --gap: 10px;
   --lift: 1;
   --close-button-hidden-display: none;
@@ -38,7 +40,8 @@
   background-color: var(--normal-bg);
   color: var(--normal-text);
   border: 1px solid var(--normal-border);
-  transform: translateX(var(--x)) translateY(var(--y)) scale(var(--scale));
+  transform: translateX(calc(var(--x) + var(--swipe-x)))
+    translateY(calc(var(--y) + var(--swipe-y))) scale(var(--scale));
   transition: transform, opacity;
   transition-duration: 0ms;
   padding: var(--padding);
@@ -306,6 +309,33 @@
   }
 }
 
+[data-sonner-toast][data-swipe-axis="horizontal"] {
+  touch-action: pan-y;
+}
+
+[data-sonner-toast][data-swipe-axis="vertical"] {
+  touch-action: pan-x;
+}
+
+[data-sonner-toast][data-swipe-axis="both"] {
+  touch-action: none;
+}
+
+[data-sonner-toast][data-swiping="true"] {
+  transition-duration: 0ms;
+  user-select: none;
+  touch-action: none;
+}
+
+[data-sonner-toast][data-unstyled="true"] {
+  box-shadow: none;
+  background: transparent;
+  border-color: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
 .sonner-toast-content-container {
   display: flex;
   flex-direction: row;
@@ -428,6 +458,39 @@
     background-color: var(--action-button-hover-bg);
     color: var(--action-button-hover-text);
   }
+}
+
+[data-sonner-description] {
+  margin-top: 4px;
+  opacity: 0.75;
+}
+
+[data-sonner-progress-track] {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+[data-sonner-progress-bar] {
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--progress));
+  transform-origin: left;
+  background: currentColor;
+  transition: transform 160ms ease-out;
+}
+
+[dir="rtl"] [data-sonner-progress-bar] {
+  transform-origin: right;
+}
+
+[data-sonner-toaster][data-dense="true"] [data-sonner-toast] {
+  --padding: 10px 12px;
+  --gap: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {

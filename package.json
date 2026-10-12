@@ -1,6 +1,6 @@
 {
   "name": "vanilla-sonner",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "dist/vanilla-sonner.umd.min.js",
   "module": "dist/vanilla-sonner.es.min.mjs",
   "types": "dist/sonner.d.ts",
@@ -16,6 +16,7 @@
   },
   "files": [
     "CHANGELOG.md",
+    "API.md",
     "MIGRATION.md",
     "dist"
   ],
@@ -23,8 +24,9 @@
     "dev": "vite",
     "build": "vite build && tsc -p tsconfig.build.json",
     "test:e2e": "playwright test",
+    "test:package": "node tests/package-contract.mjs",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run typecheck && npm run test:e2e && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run test:e2e && npm run build && npm run test:package"
   },
   "keywords": [
     "sonner-toast",

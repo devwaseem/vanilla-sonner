@@ -4,17 +4,16 @@ A lightweight port of [Sonner](https://github.com/emilkowalski/sonner) for vanil
 
 vanilla-sonner brings elegant and customizable toast notifications to your web applications without any framework dependencies.
 
-See the [changelog](CHANGELOG.md) for release notes. Upgrading from 0.5.x? Read the [0.6.0 migration guide](MIGRATION.md#060).
+See the [complete API reference](API.md), [changelog](CHANGELOG.md), and [0.6.0 migration guide](MIGRATION.md#060).
 
 ## ✨ Features
 
-Framework Agnostic: Works with any vanilla JavaScript project.
-
-Highly Customizable: Control position, theme, duration, and content (plain, description, success, info, warning, error).
-
-Rich Colors: Option to use rich, type-specific colors for enhanced visual feedback.
-
-Interactive: Toasts expand on hover for better readability and pause their removal.
+- **Framework agnostic:** one browser-first API with no component framework dependency.
+- **Complete lifecycle control:** stable IDs, in-place updates, animated dismissal, immediate removal, pause/resume, teardown, and bounded history.
+- **Async workflows:** loading states, structured promise results, delayed appearance, controlled progress, and stale-result protection.
+- **Flexible capacity:** per-position limits with hide, queue, discard-oldest, or discard-newest policies.
+- **Accessible interaction:** polite or important live regions, keyboard navigation, focus shortcuts, swipe dismissal, reduced motion, and exact timer pausing.
+- **Scoped configuration:** named toaster instances, per-type defaults, dedupe and creation hooks, logical RTL positions, themes, rich colors, dense stacks, and unstyled parts.
 
 ## 🚀 Installation
 
@@ -28,19 +27,22 @@ via CDN:
 
 ```html
 <head>
+  ...
 
-    ...
+  <link
+    href="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.min.css"
+    rel="stylesheet"
+  />
 
-    <link href="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.umd.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.umd.min.js"></script>
+  <!-- If you're using ES Modules -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.es.min.mjs"
+    type="module"
+  ></script>
 
-    <!-- If you're using ES Modules -->
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-sonner@latest/dist/vanilla-sonner.es.min.mjs" type="module"></script>
-
-    
-    ...
-
+  ...
 </head>
 ```
 
@@ -48,19 +50,16 @@ via Manually:
 
 ```html
 <head>
+  ...
 
-    ...
+  <link href="path/to/dist/vanilla-sonner.min.css" rel="stylesheet" />
 
-    <link href="path/to/dist/vanilla-sonner.min.css" rel="stylesheet" />
+  <script src="path/to/dist/vanilla-sonner.umd.min.js"></script>
 
-    <script src="path/to/dist/vanilla-sonner.umd.min.js"></script>
+  <!-- If you're using ES Modules -->
+  <script src="path/to/dist/vanilla-sonner.es.min.mjs" type="module"></script>
 
-    <!-- If you're using ES Modules -->
-    <script src="path/to/dist/vanilla-sonner.es.min.mjs" type="module"></script>
-
-    
-    ...
-
+  ...
 </head>
 ```
 
@@ -74,17 +73,18 @@ Place an `<ol>` element with the `id="sonner-toast-container"` in your index.htm
 
 ```html
 <body>
-    ...
+  ...
 
-    <!-- The main toaster container -->
-    <ol id="sonner-toast-container"
-        position="bottom-right"
-        max-toasts="3"
-        rich-colors="true"
-        theme="light">
-    </ol>
+  <!-- The main toaster container -->
+  <ol
+    id="sonner-toast-container"
+    position="bottom-right"
+    max-toasts="3"
+    rich-colors="true"
+    theme="light"
+  ></ol>
 
-...
+  ...
 </body>
 ```
 
@@ -93,30 +93,76 @@ Place an `<ol>` element with the `id="sonner-toast-container"` in your index.htm
 After setting up your container, import the toast function into your JavaScript file and use it to display notifications. If you're including the script directly in your HTML, toast will be globally available on the window object.
 
 ```js
-import { toast } from 'vanilla-sonner'; // If using ES Modules
-import 'vanilla-sonner/style.css'; // Required styles
+import { toast } from "vanilla-sonner"; // If using ES Modules
+import "vanilla-sonner/style.css"; // Required styles
 
 // Basic toast
-toast('My first vanilla toast!');
+toast("My first vanilla toast!");
 
 // Toast with a description
-toast.message('Update available', 'New version 1.2.0 available for download.');
+toast.message("Update available", "New version 1.2.0 available for download.");
 
 // Success toast
-toast.success('Event created successfully!');
+toast.success("Event created successfully!");
 
 // Info toast
-toast.info('5 tasks completed!');
+toast.info("5 tasks completed!");
 
 // Warning toast
-toast.warning('Please save your changes before closing!');
+toast.warning("Please save your changes before closing!");
 
 // Error toast
-toast.error('Something went wrong!');
+toast.error("Something went wrong!");
 
 // Custom toast (requires a <template id="..."> in your HTML)
-toast.custom('custom-toast-template', { wifiName: 'Pineapple' }, { duration: 3000 });
+toast.custom(
+  "custom-toast-template",
+  { wifiName: "Pineapple" },
+  { duration: 3000 },
+);
+```
 
+## Lifecycle Control
+
+Every non-promise helper returns the toast's string identifier. Pass an `id` to create-or-update the same toast without replacing its DOM element:
+
+```js
+const id = toast.info("Uploading…", {
+  id: "profile-upload",
+  duration: 0,
+});
+
+toast.update(id, {
+  type: "success",
+  message: "Upload complete",
+  description: "Your profile photo is ready.",
+  duration: 3000,
+});
+
+toast.dismiss(id); // dismiss one toast
+toast.dismiss(); // dismiss every active toast
+```
+
+Loading and controlled progress use the same identifier:
+
+```js
+const uploadId = toast.loading("Uploading…", { progress: 0 });
+toast.update(uploadId, { progress: 0.5, message: "Uploading… 50%" });
+toast.done(uploadId, { message: "Upload complete", duration: 3000 });
+```
+
+Omitting `duration` from `toast.update()` preserves the toast's current timer. Supplying `duration` starts a new timer; use `0` to keep the toast open until dismissed.
+
+Promise toasts accept result mappers and return the original promise, so they remain awaitable:
+
+```js
+const request = fetch("/api/profile");
+
+const response = await toast.promise(request, {
+  loading: "Loading profile…",
+  success: (result) => `Loaded ${result.url}`,
+  error: (error) => `Could not load profile: ${error.message}`,
+});
 ```
 
 ## Custom Toasts (`toast.custom`)
@@ -163,52 +209,53 @@ toast.custom(
 
 `toast.custom(templateId, data, options?)`
 
-| Parameter | Type | Required | Description |
-|---|---|---:|---|
-| `templateId` | `string` | Yes | The `id` of a `<template>` element in the DOM. |
-| `data` | `Record<string, string>` | Yes | Keys used to replace placeholders in your template. |
-| `options.duration` | `number` | No | Overrides the container’s `duration` (ms). Use `0` to keep it open until dismissed. |
-| `options.action.label` | `string` | No | Label for the built-in action button. |
-| `options.action.onClick` | `() => void \| false` | No | Action handler. If it returns `false`, the toast stays open; otherwise it dismisses. |
+| Parameter    | Type                     | Required | Description                                                                                                                              |
+| ------------ | ------------------------ | -------: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `templateId` | `string`                 |      Yes | The `id` of a `<template>` element in the DOM.                                                                                           |
+| `data`       | `Record<string, string>` |      Yes | Keys used to replace placeholders in your template.                                                                                      |
+| `options`    | `ToastConfig`            |       No | Per-toast configuration such as `id`, `duration`, `closeButton`, `theme`, `position`, `richColors`, `action`, `onClose`, and `onRemove`. |
 
-Notes:
-- Close button is controlled by the container attribute `close-button="true"` (or by the container default).
-- Theme/position/rich-colors are controlled by the toaster container attributes and apply to custom toasts too.
+Per-toast options override toaster container defaults. Supplying the same `options.id` again updates the existing custom toast in place.
 
 ## Toaster Container Attributes
 
 Configure the global behavior of your toasts by adding the following attributes to the `<ol id="sonner-toast-container">` element:
 
 | Attribute    | Description                                                                                                 | Default        | Accepted Values                                                                         |
-|--------------|-------------------------------------------------------------------------------------------------------------|----------------|-----------------------------------------------------------------------------------------|
+| ------------ | ----------------------------------------------------------------------------------------------------------- | -------------- | --------------------------------------------------------------------------------------- |
 | position     | Sets the default position of the toasts.                                                                    | bottom-right   | bottom-right, top-left, top-center, top-right, bottom-left, bottom-center, bottom-right |
 | max-toasts   | The maximum number of toasts to display at once. Older toasts will be hidden if this limit is exceeded.     | 3              | Any integer                                                                             |
 | duration     | The default duration (in milliseconds) for which a toast remains visible. Set to 0 for indefinite duration. | 0 (indefinite) | Any integer (milliseconds)                                                              |
 | close-button | If true, a close button will be displayed on each toast.                                                    | false          | true, false                                                                             |
 | rich-colors  | If true, toasts will use type-specific background and border colors (success, info, warning, error).        | false          | true, false                                                                             |
-| theme        | Sets the default theme for toasts .                                                                         | light          | system, light, dark                                                                             |
+| theme        | Sets the default theme for toasts .                                                                         | light          | system, light, dark                                                                     |
 | expanded     | If true, toasts will appear in an expanded state by default.                                                | false          | true, false                                                                             |
 
-## ToastOptions Interface
+## API Reference
 
-The ToastOptions interface defines the available properties when creating a toast:
+See [`API.md`](API.md) for the complete contracts and examples, including:
 
-```ts
-interface ToastOptions {
-    type: "plain" | "description" | "success" | "info" | "warning" | "error" | "action";
-    message: string;
-    theme?: "light" | "dark";
-    description?: string;
-    xPosition?: "left" | "right" | "center";
-    yPosition?: "top" | "bottom";
-    duration?: number; // In milliseconds
-    useRichColors?: boolean;
-    action?: { // Note: Action toasts are planned for future updates.
-        label: string;
-        onClick: () => void;
-    };
-    closeButton?: boolean;
-}
+- every `ToastConfig` and `ToasterConfig` option;
+- loading, structured promise results, progress, delay, and timer control;
+- queue and overflow semantics;
+- swipe, keyboard, accessibility, RTL, and styling behavior;
+- scoped/named toaster instances and teardown;
+- duplicate filtering, snapshots, and lifecycle reasons.
+
+Create an isolated toaster for a separate application surface:
+
+```js
+import { createToaster } from "vanilla-sonner";
+
+const alerts = createToaster("#critical-alerts", {
+  id: "alerts",
+  position: "top-center",
+  defaults: {
+    error: { important: true, duration: 0 },
+  },
+});
+
+alerts.error("Connection lost");
 ```
 
 ## 🛠️ Development
@@ -236,7 +283,7 @@ npm run build
 
 This generates the dist folder, containing the compiled JavaScript and CSS files.
 
-## Run the example 
+## Run the example
 
 You can open example/index.html directly in your browser, or use a local development server. If you have vite installed, you can run:
 
